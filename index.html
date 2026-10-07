@@ -1,0 +1,951 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#eef0ec" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#121514" media="(prefers-color-scheme: dark)">
+<style>:root{color-scheme:light}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
+<title>山梨入試 英単語</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,600;1,6..72,400&family=Zen+Kaku+Gothic+New:wght@400;500;700&display=swap">
+<style>
+/* Layout: 1カラムのスマホ画面。ホーム/一覧を下タブで切替、学習は全画面の単語カード */
+:root{
+  --bg:#eef0ec; --surface:#fbfcf9; --ink:#1d2320; --muted:#5d6762; --line:#d6dbd5;
+  --grape:#5b2c6f; --grape-soft:#e9dfee; --on-grape:#ffffff;
+  --leaf:#2d7547; --leaf-soft:#dcebdf; --miss:#b3402e; --miss-soft:#f5e0da;
+  --ring:#b8bfb9;
+  --f-en:"Newsreader", "Times New Roman", Georgia, serif;
+  --f-ja:"Zen Kaku Gothic New", "Hiragino Sans", "Yu Gothic", "Meiryo", sans-serif;
+  --r:14px;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#121514; --surface:#1c201e; --ink:#e7ebe8; --muted:#9ba5a0; --line:#2f3633;
+  --grape:#c7a2d9; --grape-soft:#33263b; --on-grape:#1b1220;
+  --leaf:#72c491; --leaf-soft:#1e3326; --miss:#ee8d7b; --miss-soft:#3e2420; --ring:#47504c;
+  color-scheme:dark;
+}}
+:root[data-theme="dark"]{
+  --bg:#121514; --surface:#1c201e; --ink:#e7ebe8; --muted:#9ba5a0; --line:#2f3633;
+  --grape:#c7a2d9; --grape-soft:#33263b; --on-grape:#1b1220;
+  --leaf:#72c491; --leaf-soft:#1e3326; --miss:#ee8d7b; --miss-soft:#3e2420; --ring:#47504c;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-ja);font-size:15px;line-height:1.6;-webkit-tap-highlight-color:transparent}
+button{font:inherit;color:inherit;cursor:pointer}
+button:focus-visible,input:focus-visible{outline:2px solid var(--grape);outline-offset:2px}
+.app{max-width:560px;margin:0 auto;padding-inline:16px;padding-block:20px calc(88px + env(safe-area-inset-bottom,0px))}
+.view{display:flex;flex-direction:column;gap:22px}
+.eyebrow{font-size:12px;letter-spacing:.08em;color:var(--muted);font-weight:500}
+h1{font-size:26px;line-height:1.25;margin:2px 0 0;font-weight:700;text-wrap:balance}
+h2{font-size:13px;letter-spacing:.06em;color:var(--muted);margin:0 0 10px;font-weight:700}
+.num{font-variant-numeric:tabular-nums}
+
+/* summary */
+.summary{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:18px;display:flex;flex-direction:column;gap:12px}
+.sumrow{display:flex;align-items:baseline;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.big{font-family:var(--f-en);font-size:44px;line-height:1;font-weight:600}
+.big small{font-size:18px;color:var(--muted);font-weight:400}
+.meta{display:flex;gap:16px;font-size:13px;color:var(--muted)}
+.meta b{color:var(--ink);font-size:16px}
+.bar{height:8px;border-radius:99px;background:var(--line);overflow:hidden;display:flex}
+.bar i{display:block;height:100%}
+.bar .l{background:var(--grape)}
+.bar .s{background:var(--grape-soft)}
+.legend{display:flex;gap:14px;font-size:12px;color:var(--muted);flex-wrap:wrap}
+.legend span::before{content:"";display:inline-block;width:9px;height:9px;border-radius:2px;margin-right:5px;vertical-align:-1px;background:var(--c)}
+
+/* modes */
+.modes{display:flex;flex-direction:column;gap:10px}
+.mode{display:grid;grid-template-columns:44px 1fr auto;align-items:center;gap:14px;text-align:left;background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:14px 16px}
+.mode:active{transform:scale(.99)}
+.mode .ic{width:44px;height:44px;border-radius:12px;background:var(--grape-soft);color:var(--grape);display:grid;place-items:center;font-family:var(--f-en);font-size:20px;font-weight:600}
+.mode b{display:block;font-size:16px}
+.mode span{font-size:12.5px;color:var(--muted)}
+.mode .go{color:var(--grape);font-size:20px}
+.weakbtn{align-self:flex-start;border:1px solid var(--line);background:var(--surface);border-radius:99px;padding:7px 14px;font-size:13px}
+.weakbtn[aria-pressed="true"]{background:var(--miss-soft);border-color:var(--miss);color:var(--miss);font-weight:700}
+
+/* scope */
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:16px;display:flex;flex-direction:column;gap:14px}
+.field{display:flex;flex-direction:column;gap:7px}
+.field>label,.field>.lab{font-size:12.5px;color:var(--muted);font-weight:500}
+.chips{display:flex;flex-wrap:wrap;gap:7px}
+.chip{border:1px solid var(--line);background:transparent;border-radius:99px;padding:6px 12px;font-size:13px}
+.chip[aria-pressed="true"]{background:var(--grape);border-color:var(--grape);color:var(--on-grape);font-weight:500}
+.scopecount{font-size:13px;color:var(--muted)}
+.scopecount b{color:var(--ink)}
+.note{font-size:12px;color:var(--muted);margin:0}
+
+/* per-pos */
+.posrows{display:flex;flex-direction:column;gap:12px}
+.posrow{display:grid;grid-template-columns:7.5em 1fr 4.5em;gap:10px;align-items:center;font-size:13px}
+.posrow .num{text-align:right;color:var(--muted)}
+
+.sync{font-size:12px;color:var(--muted);display:flex;align-items:center;gap:6px}
+.sync i{width:7px;height:7px;border-radius:50%;background:var(--muted);display:inline-block}
+.sync.cloud i{background:var(--leaf)}
+.danger{border:1px solid var(--line);background:transparent;border-radius:10px;padding:8px 12px;font-size:13px;color:var(--muted)}
+.danger.arm{border-color:var(--miss);color:var(--miss);font-weight:700}
+
+/* list */
+.search{width:100%;font:inherit;font-size:16px;padding:11px 14px;border-radius:12px;border:1px solid var(--line);background:var(--surface);color:var(--ink)}
+.seg{display:flex;gap:6px;flex-wrap:wrap}
+.wl{display:flex;flex-direction:column;border-top:1px solid var(--line)}
+.wrow{border-bottom:1px solid var(--line)}
+.wrow>button{width:100%;display:grid;grid-template-columns:10px minmax(0,1fr) auto;gap:12px;align-items:center;text-align:left;background:none;border:0;padding:12px 2px}
+.dot{width:9px;height:9px;border-radius:50%;background:var(--line)}
+.dot.learn{background:var(--grape)}.dot.weak{background:var(--miss)}.dot.seen{background:var(--grape-soft);box-shadow:inset 0 0 0 1.5px var(--grape)}
+.wrow .en{font-family:var(--f-en);font-size:19px;font-weight:600;line-height:1.2}
+.wrow .ja{font-size:13px;color:var(--muted);display:block;overflow-wrap:anywhere}
+.tag{font-size:11px;border:1px solid var(--line);border-radius:6px;padding:1px 6px;color:var(--muted);white-space:nowrap}
+.tag.C{border-color:var(--grape);color:var(--grape)}
+.wdetail{padding:0 2px 14px 24px;display:flex;flex-direction:column;gap:6px;font-size:14px}
+.ex{font-family:var(--f-en);font-size:17px;line-height:1.45}
+.ex b{color:var(--grape);font-weight:600}
+.exja{font-size:13px;color:var(--muted)}
+.forms{font-family:var(--f-en);font-style:italic;color:var(--muted);font-size:15px}
+.spk{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);background:var(--surface);border-radius:99px;padding:5px 12px;font-size:12.5px;align-self:flex-start}
+.spk svg{width:16px;height:16px}
+.empty{padding:28px 0;text-align:center;color:var(--muted);font-size:14px}
+
+/* tab bar */
+.tabs{position:fixed;left:0;right:0;bottom:0;background:var(--surface);border-top:1px solid var(--line);display:flex;justify-content:center;padding-bottom:env(safe-area-inset-bottom,0px);z-index:5}
+.tabs div{display:flex;width:100%;max-width:560px}
+.tabs button{flex:1;background:none;border:0;padding:12px 0 13px;font-size:13px;color:var(--muted);font-weight:500;border-top:2px solid transparent;margin-top:-1px}
+.tabs button[aria-current="page"]{color:var(--grape);border-top-color:var(--grape);font-weight:700}
+
+/* study overlay */
+.study{position:fixed;inset:0;background:var(--bg);z-index:10;display:flex;flex-direction:column;padding:env(safe-area-inset-top,0px) 0 env(safe-area-inset-bottom,0px)}
+.sin{width:100%;max-width:560px;margin:0 auto;padding-inline:16px;flex:1;display:flex;flex-direction:column;min-height:0}
+.shead{display:flex;align-items:center;gap:12px;padding-block:12px}
+.x{width:40px;height:40px;border-radius:50%;border:1px solid var(--line);background:var(--surface);font-size:20px;line-height:1;flex:none}
+.prog{flex:1;height:6px;border-radius:99px;background:var(--line);overflow:hidden}
+.prog i{display:block;height:100%;background:var(--grape);transition:width .25s}
+.scount{font-size:13px;color:var(--muted);min-width:3.6em;text-align:right}
+.sbody{flex:1;overflow-y:auto;display:flex;flex-direction:column;gap:14px;padding-block:6px 14px;min-height:0}
+.sfoot{display:flex;gap:10px;padding-block:10px 14px}
+.btn{flex:1;border:0;border-radius:14px;padding:15px 10px;font-size:16px;font-weight:700;background:var(--grape);color:var(--on-grape)}
+.btn.ghost{background:var(--surface);color:var(--ink);border:1px solid var(--line);font-weight:500}
+.btn.ok{background:var(--leaf);color:var(--surface)}
+.btn.ng{background:var(--miss);color:var(--surface)}
+
+/* 単語カード（リング穴つき） */
+.wcard{position:relative;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:30px 22px 24px 22px;min-height:230px;display:flex;flex-direction:column;justify-content:center;gap:10px;text-align:left;width:100%}
+.wcard::before{content:"";position:absolute;top:14px;left:14px;width:13px;height:13px;border-radius:50%;background:var(--bg);box-shadow:inset 0 0 0 1.5px var(--ring)}
+.wcard .poslab{position:absolute;top:12px;right:14px}
+.headword{font-family:var(--f-en);font-weight:600;font-size:clamp(30px,9vw,44px);line-height:1.15;overflow-wrap:anywhere}
+.headja{font-size:clamp(22px,6vw,28px);font-weight:700;line-height:1.35}
+.wcard .hint{font-size:12.5px;color:var(--muted)}
+.ans{border-top:1px dashed var(--line);padding-top:12px;display:flex;flex-direction:column;gap:6px}
+.ans .ja{font-size:19px;font-weight:700}
+.choices{display:flex;flex-direction:column;gap:9px}
+.choice{text-align:left;border:1px solid var(--line);background:var(--surface);border-radius:12px;padding:13px 15px;font-size:15.5px;line-height:1.4}
+.choice.en{font-family:var(--f-en);font-size:19px;font-weight:600}
+.choice.right{background:var(--leaf-soft);border-color:var(--leaf);color:var(--ink)}
+.choice.wrong{background:var(--miss-soft);border-color:var(--miss)}
+.choice:disabled{cursor:default}
+.verdict{font-weight:700;font-size:15px}
+.verdict.ok{color:var(--leaf)}.verdict.ng{color:var(--miss)}
+.spell{width:100%;font-family:var(--f-en);font-size:24px;padding:12px 14px;border-radius:12px;border:1.5px solid var(--line);background:var(--surface);color:var(--ink);letter-spacing:.02em}
+.spell.ok{border-color:var(--leaf)}.spell.ng{border-color:var(--miss)}
+.letters{font-family:var(--f-en);font-size:22px;letter-spacing:.18em;color:var(--muted)}
+.res{display:flex;flex-direction:column;gap:16px;padding-top:10px}
+.score{font-family:var(--f-en);font-size:64px;font-weight:600;line-height:1}
+.score small{font-size:24px;color:var(--muted);font-weight:400}
+.missl{display:flex;flex-direction:column;border-top:1px solid var(--line)}
+.missl div{display:flex;justify-content:space-between;gap:12px;padding:10px 0;border-bottom:1px solid var(--line);font-size:14px}
+.missl .en{font-family:var(--f-en);font-size:18px;font-weight:600}
+.missl .ja{color:var(--muted);text-align:right;min-width:0}
+
+.toast{position:fixed;left:50%;bottom:calc(84px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:9px 16px;border-radius:99px;font-size:13px;z-index:20;max-width:calc(100% - 32px)}
+@media (prefers-reduced-motion: reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+
+<div class="app">
+  <main id="home" class="view"></main>
+  <main id="list" class="view" hidden></main>
+</div>
+<nav class="tabs" aria-label="画面切替"><div>
+  <button id="tab-home" aria-current="page">ホーム</button>
+  <button id="tab-list">単語一覧</button>
+</div></nav>
+<section id="study" class="study" hidden></section>
+<div id="toast" class="toast" hidden></div>
+
+<script>
+/* 単語データ: 単語|意味|例文|例文訳|レベル(A基本 B標準 C発展)|不規則変化 */
+const RAW = `
+#動
+accept|受け入れる、受け取る|He accepted my advice.|彼は私の助言を受け入れた。|B
+add|加える|Add some salt to the soup.|スープに塩を少し加えて。|B
+agree|賛成する、同意する|I agree with your idea.|私はあなたの考えに賛成です。|A
+allow|許す、許可する|My father allowed me to use his camera.|父は私がカメラを使うのを許してくれた。|B
+arrive|到着する|We arrived at the station at six.|私たちは6時に駅に着いた。|A
+become|～になる|She became a doctor.|彼女は医者になった。|A|became-become
+begin|始める、始まる|The concert began at seven.|コンサートは7時に始まった。|A|began-begun
+believe|信じる|I can't believe it.|それは信じられない。|A
+belong|所属する（to）|I belong to the tennis team.|私はテニス部に所属している。|B
+borrow|借りる|Can I borrow your pen?|ペンを借りてもいいですか。|A
+break|壊す|Who broke the window?|誰が窓を割ったの？|B|broke-broken
+bring|持ってくる、連れてくる|Bring your lunch tomorrow.|明日はお弁当を持ってきなさい。|A|brought-brought
+build|建てる|They built a new library.|彼らは新しい図書館を建てた。|A|built-built
+buy|買う|I bought a book for my sister.|私は妹に本を買った。|A|bought-bought
+carry|運ぶ、持ち歩く|Can you carry this box?|この箱を運んでくれますか。|A
+catch|つかまえる、（乗り物に）間に合う|I caught the first train.|私は始発電車に間に合った。|A|caught-caught
+cause|引き起こす|Cars cause air pollution.|車は大気汚染を引き起こす。|C
+choose|選ぶ|Choose one from these books.|これらの本から1冊選びなさい。|B|chose-chosen
+collect|集める|We collected old cans for recycling.|私たちはリサイクルのために空き缶を集めた。|B
+communicate|意思を伝え合う|We communicated in English.|私たちは英語で意思を伝え合った。|B
+compare|比べる|Compare these two pictures.|この2枚の絵を比べなさい。|C
+continue|続ける|Please continue your story.|話を続けてください。|B
+create|創り出す|Let's create a new event for our town.|町のために新しい行事を作ろう。|B
+decide|決める|I decided to study abroad.|私は留学することに決めた。|B
+decrease|減る、減らす|The number of children is decreasing.|子どもの数が減ってきている。|C
+depend|頼る、～次第である（on）|It depends on the weather.|それは天気次第だ。|C
+describe|描写する、説明する|Describe your town in English.|あなたの町について英語で説明しなさい。|C
+destroy|破壊する|The forest was destroyed by fire.|森は火事で破壊された。|C
+develop|発達させる、開発する|The country developed quickly.|その国は急速に発展した。|C
+disappear|消える|The sun disappeared behind the clouds.|太陽が雲の後ろに消えた。|C
+discover|発見する|He discovered a new star.|彼は新しい星を発見した。|B
+draw|（線で絵を）描く|She drew a picture of Mt. Fuji.|彼女は富士山の絵を描いた。|A|drew-drawn
+encourage|励ます|My teacher encouraged me to try again.|先生はもう一度挑戦するよう励ましてくれた。|C
+exchange|交換する|We exchanged e-mail addresses.|私たちはメールアドレスを交換した。|B
+explain|説明する|Can you explain the rule?|そのルールを説明してくれますか。|B
+express|表現する|It's hard to express my feelings in English.|英語で気持ちを表現するのは難しい。|C
+fail|失敗する、（試験に）落ちる|Don't be afraid to fail.|失敗することを恐れないで。|B
+fall|落ちる、倒れる|Leaves fall in autumn.|秋には葉が落ちる。|A|fell-fallen
+feed|えさをやる|I feed my dog every morning.|私は毎朝犬にえさをやる。|B|fed-fed
+feel|感じる|I feel happy today.|今日は幸せな気分だ。|A|felt-felt
+fill|満たす|Fill the glass with water.|コップを水で満たしなさい。|B
+find|見つける、～とわかる|I found the book interesting.|その本はおもしろいとわかった。|A|found-found
+follow|従う、ついて行く|Please follow me.|私について来てください。|B
+forget|忘れる|Don't forget to bring your lunch.|お弁当を持ってくるのを忘れないで。|A|forgot-forgotten
+graduate|卒業する（from）|My sister graduated from high school.|姉は高校を卒業した。|C
+grow|育つ、育てる、～になる|We grow grapes in Yamanashi.|山梨ではぶどうを育てている。|A|grew-grown
+guess|推測する|Guess what!|ねえ、聞いて！|B
+happen|起こる|What happened?|何が起こったの？|B
+hear|聞こえる、聞く|I heard a strange sound.|変な音が聞こえた。|A|heard-heard
+hold|開催する、持つ|The festival is held every summer.|その祭りは毎年夏に開かれる。|B|held-held
+hope|望む|I hope you'll like it.|気に入ってもらえるといいな。|A
+hurt|傷つける、痛む|My leg hurts.|足が痛い。|B|hurt-hurt
+imagine|想像する|Imagine a world without music.|音楽のない世界を想像してみて。|B
+improve|改善する、上達させる|I want to improve my English.|英語を上達させたい。|C
+increase|増える、増やす|The number of tourists is increasing.|観光客の数が増えている。|C
+introduce|紹介する|Let me introduce myself.|自己紹介させてください。|B
+invent|発明する|Who invented the telephone?|誰が電話を発明したの？|B
+invite|招待する|She invited me to her party.|彼女は私をパーティーに招待してくれた。|B
+join|参加する、加わる|Why don't you join us?|私たちに加わりませんか。|A
+keep|保つ、持ち続ける|Keep your room clean.|部屋をきれいにしておきなさい。|A|kept-kept
+laugh|笑う|Everyone laughed at his joke.|皆が彼の冗談に笑った。|A
+leave|出発する、置き忘れる|I left my umbrella on the train.|電車に傘を置き忘れた。|B|left-left
+lend|貸す|Could you lend me your dictionary?|辞書を貸していただけますか。|B|lent-lent
+lose|失う、負ける|We lost the game.|私たちは試合に負けた。|A|lost-lost
+mean|意味する|What does this word mean?|この単語はどういう意味ですか。|A|meant-meant
+miss|乗り遅れる、いなくて寂しく思う|I missed the bus.|バスに乗り遅れた。|B
+notice|気づく|I noticed a mistake.|私は間違いに気づいた。|B
+order|注文する|I ordered a pizza.|ピザを注文した。|B
+pass|手渡す、合格する|I passed the test.|試験に合格した。|B
+pick|摘む、拾う|We picked strawberries.|私たちはイチゴを摘んだ。|B
+plant|植える|We planted trees in the park.|私たちは公園に木を植えた。|B
+practice|練習する|I practice the piano every day.|私は毎日ピアノを練習する。|A
+prepare|準備する|We prepared for the school festival.|私たちは文化祭の準備をした。|B
+produce|生産する|Yamanashi produces a lot of peaches.|山梨はたくさんの桃を生産している。|C
+promise|約束する|I promise to come back.|戻ってくると約束するよ。|B
+protect|守る|We must protect nature.|私たちは自然を守らなければならない。|B
+raise|上げる、育てる、（お金を）集める|Raise your hand if you know the answer.|答えがわかったら手を挙げて。|C
+reach|到着する、届く|We reached the top of the mountain.|私たちは山頂に到着した。|B
+realize|気づく、実現する|I realized the importance of friends.|友達の大切さに気づいた。|C
+receive|受け取る|I received a letter from Emma.|エマから手紙を受け取った。|B
+recommend|勧める|I recommend this book.|この本をおすすめします。|C
+recycle|リサイクルする|We recycle paper at school.|学校では紙をリサイクルしている。|B
+reduce|減らす|We should reduce plastic waste.|プラスチックごみを減らすべきだ。|C
+remember|覚えている、思い出す|I remember his name.|彼の名前を覚えている。|A
+repeat|繰り返す|Please repeat after me.|私の後について繰り返してください。|A
+respect|尊敬する|I respect my grandfather.|私は祖父を尊敬している。|B
+rise|昇る、上がる|The sun rises in the east.|太陽は東から昇る。|B|rose-risen
+save|救う、節約する、貯める|Let's save energy.|エネルギーを節約しよう。|B
+seem|～のように見える|He seems tired.|彼は疲れているようだ。|C
+sell|売る|They sell fresh fruit at the market.|その市場では新鮮な果物を売っている。|A|sold-sold
+send|送る|I'll send you a picture.|写真を送るね。|A|sent-sent
+share|共有する、分け合う|Let's share our ideas.|考えを共有しよう。|B
+shout|叫ぶ|Don't shout in the library.|図書館で叫ばないで。|B
+smell|においがする|This flower smells sweet.|この花は甘いにおいがする。|B
+solve|解決する、解く|We solved the problem together.|私たちは一緒に問題を解決した。|C
+sound|～に聞こえる、～のようだ|That sounds interesting.|それはおもしろそうだね。|A
+spend|（時間・お金を）使う、過ごす|I spent the weekend with my family.|週末は家族と過ごした。|B|spent-spent
+spread|広がる、広げる|The news spread quickly.|その知らせはすぐに広まった。|C|spread-spread
+support|支える、応援する|My family always supports me.|家族はいつも私を支えてくれる。|B
+surprise|驚かせる|The news surprised everyone.|その知らせは皆を驚かせた。|B
+survive|生き残る|Some animals can't survive the cold winter.|寒い冬を生き延びられない動物もいる。|C
+taste|味がする|This soup tastes good.|このスープはおいしい。|B
+teach|教える|Mr. Ono teaches us math.|小野先生は私たちに数学を教えている。|A|taught-taught
+throw|投げる|He threw the ball to me.|彼は私にボールを投げた。|B|threw-thrown
+travel|旅行する|I want to travel around the world.|世界中を旅行したい。|A
+treat|扱う、もてなす|Treat others kindly.|他人に親切に接しなさい。|C
+trust|信頼する|You can trust him.|彼は信頼できるよ。|C
+understand|理解する|I understand how you feel.|あなたの気持ちはわかります。|A|understood-understood
+visit|訪れる|Many people visit Yamanashi every year.|毎年多くの人が山梨を訪れる。|A
+waste|むだにする|Don't waste food.|食べ物をむだにしないで。|B
+wear|身につけている|She is wearing a yukata.|彼女は浴衣を着ている。|B|wore-worn
+win|勝つ|Our team won the game.|私たちのチームが試合に勝った。|A|won-won
+wish|（～であればいいのにと）願う|I wish I could fly.|空を飛べたらいいのに。|C
+wonder|～かなと思う|I wonder why he is late.|彼はなぜ遅れているのかな。|B
+worry|心配する|Don't worry about it.|それについては心配しないで。|A
+#名
+accident|事故|He was hurt in a car accident.|彼は自動車事故でけがをした。|B
+activity|活動|Club activities are fun.|部活動は楽しい。|B
+advice|助言|Thank you for your advice.|助言をありがとう。|B
+air|空気|The air is clean here.|ここは空気がきれいだ。|B
+area|地域|This area is famous for wine.|この地域はワインで有名だ。|C
+bottle|びん、ボトル|Bring your own water bottle.|自分の水筒を持ってきてね。|B
+century|世紀|This temple was built in the 16th century.|この寺は16世紀に建てられた。|B
+chance|機会|This is a good chance to speak English.|英語を話すよい機会だ。|B
+climate|気候|The climate is changing.|気候が変わってきている。|C
+community|地域社会|Let's clean our community.|地域をきれいにしよう。|C
+contest|コンテスト|She won the speech contest.|彼女はスピーチコンテストで優勝した。|B
+country|国、いなか|How many countries have you visited?|何か国訪れたことがありますか。|A
+culture|文化|I'm interested in Japanese culture.|日本の文化に興味がある。|B
+customer|（店の）客|The shop has many customers.|その店には客がたくさんいる。|C
+difference|違い|What's the difference between them?|それらの違いは何ですか。|B
+disaster|災害|We should prepare for disasters.|災害に備えるべきだ。|C
+dream|夢|My dream is to be a teacher.|私の夢は先生になることだ。|A
+earth|地球|We live on the earth.|私たちは地球に住んでいる。|B
+earthquake|地震|We had a big earthquake last night.|昨夜大きな地震があった。|B
+effort|努力|Your effort will be rewarded.|あなたの努力は報われるだろう。|C
+energy|エネルギー|Solar energy is clean.|太陽エネルギーはクリーンだ。|B
+environment|環境|We must protect the environment.|私たちは環境を守らなければならない。|B
+event|行事、出来事|The event was a big success.|その行事は大成功だった。|B
+example|例|Can you give me an example?|例を挙げてくれますか。|A
+experience|経験|It was a great experience.|それはすばらしい経験だった。|B
+fact|事実|In fact, he is my cousin.|実は彼は私のいとこです。|C
+farmer|農家の人|Farmers in Yamanashi grow many peaches.|山梨の農家はたくさんの桃を育てている。|B
+favor|親切な行為、頼みごと|Can I ask you a favor?|お願いがあるのですが。|C
+festival|祭り|The school festival is next week.|文化祭は来週です。|A
+field|畑、分野|My grandfather works in the field.|祖父は畑で働いている。|B
+floor|床、階|The library is on the third floor.|図書館は3階にある。|B
+forest|森|Many animals live in the forest.|森には多くの動物が住んでいる。|B
+future|将来、未来|What do you want to be in the future?|将来何になりたいですか。|A
+garbage|ごみ|Please take the garbage out.|ごみを出してください。|B
+goal|目標|My goal is to pass the exam.|私の目標は試験に合格することだ。|B
+government|政府|The government made a new law.|政府は新しい法律を作った。|C
+graph|グラフ|Look at the graph.|グラフを見てください。|B
+guest|（招かれた）客|We had some guests from Australia.|オーストラリアからのお客さんが来た。|B
+health|健康|Sleep is important for your health.|睡眠は健康にとって大切だ。|B
+heart|心臓、心|She has a kind heart.|彼女は優しい心の持ち主だ。|B
+history|歴史|I like Japanese history.|日本史が好きだ。|A
+holiday|休日|Tomorrow is a holiday.|明日は休日だ。|B
+idea|考え、アイデア|That's a good idea.|それはいい考えだ。|A
+information|情報|I got the information on the Internet.|インターネットでその情報を得た。|B
+island|島|Japan has many islands.|日本にはたくさんの島がある。|B
+kind|種類|What kind of music do you like?|どんな種類の音楽が好き？|A
+land|土地、陸|This land is good for growing grapes.|この土地はぶどう作りに向いている。|B
+language|言語|How many languages can you speak?|何か国語話せますか。|A
+leader|指導者、リーダー|She is a good leader.|彼女はよいリーダーだ。|B
+meal|食事|Let's enjoy the meal.|食事を楽しもう。|B
+medicine|薬|Take this medicine after meals.|この薬を食後に飲みなさい。|B
+member|一員、部員|He is a member of the art club.|彼は美術部の部員だ。|B
+memory|思い出、記憶|I have good memories of the trip.|その旅行にはよい思い出がある。|B
+message|伝言、メッセージ|Can I leave a message?|伝言をお願いできますか。|A
+mind|心、精神|She changed her mind.|彼女は気が変わった。|C
+mistake|間違い|Don't be afraid of making mistakes.|間違えることを恐れないで。|B
+moment|瞬間、ちょっとの間|Wait a moment, please.|少々お待ちください。|B
+nature|自然|We enjoyed nature in the mountains.|山で自然を楽しんだ。|B
+neighbor|隣人、近所の人|Our neighbors are very kind.|近所の人たちはとても親切だ。|B
+number|数|The number of students is small.|生徒の数は少ない。|B
+ocean|大洋、海|Plastic is a big problem in the ocean.|海ではプラスチックが大きな問題だ。|B
+opinion|意見|What's your opinion?|あなたの意見は？|B
+part|部分、役割|This is the most important part.|ここがいちばん大切な部分だ。|B
+peace|平和|We hope for world peace.|私たちは世界平和を願っている。|B
+percent|パーセント|Forty percent of the students walk to school.|生徒の40パーセントが歩いて通学している。|B
+plastic|プラスチック|Plastic bags are bad for the sea.|レジ袋は海に悪い。|B
+pollution|汚染|Air pollution is a big problem.|大気汚染は大きな問題だ。|C
+power|力、電力|The power went out.|停電した。|B
+presentation|発表|I gave a presentation in English class.|英語の授業で発表をした。|C
+price|値段|The price is too high.|値段が高すぎる。|B
+problem|問題|Let's think about this problem.|この問題について考えよう。|A
+reason|理由|Tell me the reason.|理由を教えて。|B
+report|報告（書）、レポート|I wrote a report about my town.|自分の町についてレポートを書いた。|B
+result|結果|I was happy with the result.|その結果に満足した。|B
+rule|規則|We have to follow the rules.|私たちは規則に従わなければならない。|A
+schedule|予定（表）|What's your schedule for tomorrow?|明日の予定は？|B
+scientist|科学者|She wants to be a scientist.|彼女は科学者になりたがっている。|B
+season|季節|Which season do you like the best?|どの季節がいちばん好き？|A
+secret|秘密|Can you keep a secret?|秘密を守れる？|B
+shrine|神社|We visited a shrine on New Year's Day.|元日に神社にお参りした。|B
+sign|標識、合図|The sign says "No Parking."|標識には「駐車禁止」と書いてある。|B
+skill|技能|Communication skills are important.|コミュニケーション能力は大切だ。|C
+society|社会|We live in an aging society.|私たちは高齢化社会に生きている。|C
+space|宇宙、空間|I want to go to space someday.|いつか宇宙に行きたい。|B
+speech|スピーチ、演説|I made a speech in English.|英語でスピーチをした。|B
+subject|教科、話題|What subject do you like?|何の教科が好き？|A
+success|成功|The festival was a great success.|その祭りは大成功だった。|C
+survey|（アンケート）調査|We did a survey in our class.|クラスでアンケート調査をした。|C
+technology|科学技術|Technology changes our lives.|科学技術は私たちの生活を変える。|C
+temperature|気温、温度|The temperature is high today.|今日は気温が高い。|C
+temple|寺|This temple is very old.|この寺はとても古い。|A
+tourist|観光客|Many tourists come to see Mt. Fuji.|多くの観光客が富士山を見に来る。|C
+tradition|伝統|This festival has a long tradition.|この祭りには長い伝統がある。|C
+uniform|制服|We wear school uniforms.|私たちは制服を着ている。|B
+vegetable|野菜|Eat more vegetables.|もっと野菜を食べなさい。|A
+village|村|He lives in a small village.|彼は小さな村に住んでいる。|B
+voice|声|She has a beautiful voice.|彼女は美しい声をしている。|B
+volunteer|ボランティア|I worked as a volunteer at the event.|その行事でボランティアとして働いた。|B
+war|戦争|Many people died in the war.|その戦争で多くの人が亡くなった。|B
+way|道、方法|This is the best way to learn English.|これが英語を学ぶいちばんよい方法だ。|A
+#形
+able|～できる（be able to）|I was able to swim fast.|私は速く泳ぐことができた。|B
+afraid|恐れて、心配して|Don't be afraid.|こわがらないで。|B
+another|もう一つの、別の|Can I have another cup of tea?|お茶をもう一杯いただけますか。|B
+brave|勇敢な|The brave boy saved the dog.|勇敢な少年がその犬を助けた。|C
+careful|注意深い|Be careful on the road.|道路では気をつけて。|B
+cheap|安い|This T-shirt was cheap.|このTシャツは安かった。|B
+comfortable|快適な|This chair is comfortable.|このいすは座り心地がいい。|C
+convenient|便利な|This app is very convenient.|このアプリはとても便利だ。|C
+dangerous|危険な|It's dangerous to swim in this river.|この川で泳ぐのは危険だ。|B
+different|違った、さまざまな|My idea is different from yours.|私の考えはあなたのとは違う。|A
+each|それぞれの|Each student has a tablet.|生徒はそれぞれタブレットを持っている。|B
+elderly|年配の|I helped an elderly woman.|私は年配の女性を手伝った。|C
+empty|からの|The bottle is empty.|そのびんはからだ。|C
+enough|十分な|We have enough time.|時間は十分にある。|B
+excited|わくわくした|I'm excited about the trip.|旅行にわくわくしている。|B
+exciting|わくわくさせる|The game was exciting.|その試合はわくわくした。|B
+expensive|高価な|This watch is too expensive.|この時計は高すぎる。|B
+famous|有名な|Yamanashi is famous for grapes.|山梨はぶどうで有名だ。|A
+favorite|大好きな、お気に入りの|What's your favorite food?|好きな食べ物は何？|A
+few|少しの、ほとんどない（数）|Few people knew the news.|その知らせを知っている人はほとんどいなかった。|B
+foreign|外国の|I want to learn a foreign language.|外国語を学びたい。|B
+free|自由な、暇な、無料の|Are you free this afternoon?|今日の午後は暇？|B
+friendly|親しみやすい|The people here are friendly.|ここの人たちは親しみやすい。|B
+full|いっぱいの、満腹の|The bus was full.|バスは満員だった。|B
+glad|うれしい|I'm glad to hear that.|それを聞いてうれしい。|B
+healthy|健康的な、健康な|Eat healthy food.|体によい食べ物を食べなさい。|B
+heavy|重い、激しい|We had heavy rain yesterday.|昨日は大雨だった。|B
+honest|正直な|He is an honest boy.|彼は正直な少年だ。|C
+impossible|不可能な|Nothing is impossible.|不可能なことはない。|C
+international|国際的な|We had an international exchange event.|国際交流のイベントがあった。|C
+little|少しの、ほとんどない（量）|There is little water in the glass.|コップには水がほとんどない。|B
+local|地元の、地域の|We enjoyed local food.|私たちは地元の料理を楽しんだ。|C
+lonely|さびしい|I felt lonely after he left.|彼が去ったあとさびしかった。|C
+main|主な|What is the main reason?|主な理由は何ですか。|C
+modern|現代的な|This is a modern building.|これは現代的な建物だ。|C
+natural|自然の|This park is rich in natural beauty.|この公園は自然の美しさに富んでいる。|C
+necessary|必要な|Water is necessary for life.|水は生命に必要だ。|C
+nervous|緊張して|I was nervous before the speech.|スピーチの前は緊張した。|C
+own|自分自身の|I want my own room.|自分の部屋がほしい。|B
+popular|人気のある|This song is popular among young people.|この歌は若者に人気がある。|A
+possible|可能な|Is it possible to finish by noon?|正午までに終えることは可能ですか。|C
+proud|誇りに思って|I'm proud of my team.|私は自分のチームを誇りに思う。|C
+public|公共の|Use public transportation.|公共交通機関を使いなさい。|C
+quiet|静かな|Please be quiet.|静かにしてください。|A
+ready|準備ができて|Are you ready?|準備はできた？|B
+real|本当の、現実の|Is this a real diamond?|これは本物のダイヤですか。|B
+safe|安全な|This water is safe to drink.|この水は飲んでも安全だ。|B
+same|同じ|We are in the same class.|私たちは同じクラスだ。|B
+serious|深刻な、まじめな|This is a serious problem.|これは深刻な問題だ。|C
+several|いくつかの|I have been there several times.|私はそこに何度か行ったことがある。|C
+shy|恥ずかしがりの|She was shy at first.|彼女は最初は恥ずかしがっていた。|C
+sick|病気の|He is sick in bed.|彼は病気で寝ている。|B
+similar|似ている|My bag is similar to yours.|私のかばんはあなたのに似ている。|C
+special|特別な|Today is a special day.|今日は特別な日だ。|B
+strange|奇妙な、見知らぬ|I heard a strange noise.|奇妙な音が聞こえた。|B
+sure|確信して|Are you sure?|本当に？|B
+surprised|驚いた|I was surprised at the news.|その知らせに驚いた。|B
+terrible|ひどい|The weather was terrible.|天気はひどかった。|C
+tired|疲れた|I'm tired after practice.|練習の後で疲れている。|A
+traditional|伝統的な|Kimono is traditional Japanese clothing.|着物は日本の伝統的な衣服だ。|C
+true|本当の|Is the story true?|その話は本当ですか。|B
+useful|役に立つ|This dictionary is very useful.|この辞書はとても役に立つ。|B
+whole|全体の|I ate the whole cake.|ケーキを丸ごと食べた。|C
+wonderful|すばらしい|We had a wonderful time.|私たちはすばらしい時間を過ごした。|A
+wrong|間違った、具合が悪い|What's wrong?|どうしたの？|B
+#副
+abroad|外国へ（で）|I want to study abroad.|留学したい。|B
+actually|実は、実際に|Actually, I've never been there.|実はそこへ行ったことがないんだ。|C
+ago|～前に|I met him two years ago.|2年前に彼に会った。|A
+almost|ほとんど|I almost forgot.|もう少しで忘れるところだった。|B
+already|すでに、もう|I have already finished it.|もうそれを終えてしまった。|B
+away|離れて、去って|The station is far away.|駅は遠く離れている。|B
+carefully|注意深く|Listen carefully.|注意して聞きなさい。|B
+easily|簡単に|He solved the problem easily.|彼はその問題を簡単に解いた。|B
+especially|特に|I like fruit, especially peaches.|果物、特に桃が好きだ。|C
+even|～でさえ|Even children can do it.|子どもでさえそれができる。|C
+ever|今までに|Have you ever been to Kyoto?|京都に行ったことがありますか。|B
+finally|ついに、最後に|Finally, we reached the top.|ついに頂上に着いた。|B
+however|しかしながら|However, it was not easy.|しかし、それは簡単ではなかった。|C
+instead|その代わりに|I didn't go out. I stayed home instead.|外出しないで、代わりに家にいた。|C
+later|後で|See you later.|また後でね。|B
+maybe|たぶん、もしかすると|Maybe you're right.|たぶんあなたが正しい。|A
+never|一度も～ない|I have never seen a koala.|私はコアラを一度も見たことがない。|B
+once|一度、かつて|I have been there once.|そこへは一度行ったことがある。|B
+probably|おそらく|It will probably rain tomorrow.|明日はおそらく雨だろう。|C
+quickly|すばやく|He ran quickly.|彼はすばやく走った。|B
+someday|（未来の）いつか|I want to visit Canada someday.|いつかカナダを訪れたい。|B
+still|まだ、今でも|He is still sleeping.|彼はまだ寝ている。|B
+suddenly|突然|Suddenly, it began to rain.|突然雨が降り始めた。|C
+together|一緒に|Let's go together.|一緒に行こう。|A
+twice|二度、2倍|I have read the book twice.|その本は2回読んだことがある。|B
+usually|ふだんは|I usually get up at six.|ふだんは6時に起きる。|A
+yet|（疑問文で）もう、（否定文で）まだ|Have you finished your homework yet?|もう宿題を終えた？|B
+#前
+across|～を横切って|We walked across the bridge.|私たちは橋を歩いて渡った。|B
+against|～に反対して、～に対抗して|Are you for or against the plan?|その計画に賛成ですか、反対ですか。|C
+along|～に沿って|We walked along the river.|私たちは川に沿って歩いた。|B
+although|～だけれども|Although it was raining, we played soccer.|雨が降っていたけれど、サッカーをした。|C
+among|（3つ以上）の間で|This song is popular among students.|この歌は生徒の間で人気がある。|C
+as|～として、～のように|I worked as a guide.|私はガイドとして働いた。|B
+behind|～の後ろに|The cat is behind the door.|ねこはドアの後ろにいる。|B
+between|（2つ）の間に|Sit between Ken and me.|健と私の間に座って。|B
+during|～の間に|I visited my aunt during the summer vacation.|夏休みの間におばを訪ねた。|B
+since|～以来、～なので|I have lived here since 2015.|2015年からここに住んでいる。|B
+than|～よりも|He is taller than me.|彼は私より背が高い。|B
+through|～を通って|The train went through the tunnel.|電車はトンネルを通り抜けた。|B
+until|～まで（ずっと）|Wait here until I come back.|私が戻るまでここで待っていて。|B
+while|～している間に|While I was reading, my mother came home.|読書をしている間に母が帰ってきた。|C
+without|～なしで|I can't live without music.|私は音楽なしでは生きていけない。|B
+#熟
+a few|少しの、2、3の（数）|I have a few friends in Kofu.|甲府に何人か友達がいる。|B
+a little|少しの（量）、少し|I can speak a little English.|英語を少し話せる。|B
+a piece of|1枚の、1切れの|I need a piece of paper.|紙が1枚必要だ。|C
+agree with|～に賛成する|I agree with you.|あなたに賛成です。|B
+all over the world|世界中で|This game is played all over the world.|このゲームは世界中で遊ばれている。|B
+as soon as|～するとすぐに|Call me as soon as you get home.|家に着いたらすぐに電話して。|C
+as ~ as possible|できるだけ～|Come as soon as possible.|できるだけ早く来て。|C
+at first|最初は|At first, I couldn't understand him.|最初は彼の言うことがわからなかった。|B
+at last|ついに|At last, the day came.|ついにその日が来た。|B
+at once|すぐに|Come here at once.|すぐにここへ来なさい。|C
+be able to|～することができる|You will be able to swim soon.|すぐに泳げるようになるよ。|B
+be afraid of|～をこわがる|She is afraid of dogs.|彼女は犬をこわがる。|B
+be different from|～と違う|Life in Japan is different from life in America.|日本の生活はアメリカの生活と違う。|B
+be famous for|～で有名だ|Yamanashi is famous for its fruit.|山梨は果物で有名だ。|B
+be full of|～でいっぱいだ|The park was full of people.|公園は人でいっぱいだった。|B
+be good at|～が得意だ|He is good at playing the guitar.|彼はギターを弾くのが得意だ。|A
+be interested in|～に興味がある|I'm interested in science.|私は科学に興味がある。|A
+be proud of|～を誇りに思う|I'm proud of my town.|私は自分の町を誇りに思う。|C
+be ready for|～の準備ができている|Are you ready for the test?|テストの準備はできた？|B
+because of|～のために（原因）|The game was stopped because of the rain.|雨のために試合が中止された。|B
+both A and B|AもBも両方|Both Ken and Yumi like music.|健も由美も音楽が好きだ。|B
+each other|お互い|We help each other.|私たちはお互いに助け合う。|B
+either A or B|AかBのどちらか|You can choose either tea or coffee.|紅茶かコーヒーのどちらかを選べます。|C
+enough to|～するのに十分な|He is old enough to drive.|彼は運転できる年齢だ。|C
+find out|見つけ出す、わかる|I found out the truth.|私は真実を知った。|C
+first of all|まず第一に|First of all, let me thank you.|まず初めにお礼を言わせてください。|B
+for example|例えば|I like sports, for example, tennis.|スポーツが好きです。例えばテニスです。|A
+for the first time|初めて|I saw snow for the first time.|初めて雪を見た。|B
+get to|～に着く|How can I get to the station?|駅へはどうやって行けばいいですか。|B
+give up|あきらめる|Don't give up.|あきらめないで。|B
+grow up|成長する、大人になる|I grew up in Kofu.|私は甲府で育った。|B
+had better|～したほうがよい|You had better go to bed early.|早く寝たほうがいい。|C
+hear from|～から便りがある|I'm happy to hear from you.|あなたから便りがあってうれしい。|C
+help ~ with ...|～の…を手伝う|Can you help me with my homework?|宿題を手伝ってくれる？|B
+How about ~?|～はどうですか|How about going shopping?|買い物に行くのはどう？|A
+I'm afraid ~|残念ながら～|I'm afraid I can't come.|残念ながら行けません。|C
+in fact|実は、実際は|In fact, I don't like it.|実はそれが好きではない。|C
+in front of|～の前に|Let's meet in front of the station.|駅の前で会おう。|A
+instead of|～の代わりに|Let's walk instead of taking a bus.|バスに乗る代わりに歩こう。|C
+look after|～の世話をする|I look after my little brother.|私は弟の世話をしている。|C
+look for|～を探す|I'm looking for my key.|かぎを探している。|A
+look forward to|～を楽しみに待つ|I'm looking forward to seeing you.|あなたに会えるのを楽しみにしています。|B
+make friends with|～と友達になる|I made friends with Tom.|トムと友達になった。|B
+more and more|ますます多くの|More and more people use smartphones.|ますます多くの人がスマホを使っている。|C
+not only A but also B|AだけでなくBも|She speaks not only English but also French.|彼女は英語だけでなくフランス語も話す。|C
+on my way to|～へ行く途中で|I met Ken on my way to school.|学校へ行く途中で健に会った。|C
+on the other hand|一方で|On the other hand, cars cause pollution.|一方で、車は汚染を引き起こす。|C
+one day|ある日|One day, he got a letter.|ある日、彼は手紙を受け取った。|B
+put on|着る、身につける|Put on your coat.|コートを着なさい。|B
+Shall I ~?|（私が）～しましょうか|Shall I open the window?|窓を開けましょうか。|B
+show ~ around|～を案内する|I'll show you around Kofu.|甲府を案内するね。|C
+so ~ that ...|とても～なので…|I was so tired that I went to bed early.|とても疲れていたので早く寝た。|C
+some ~, others ...|～もいれば、…もいる|Some people like summer, others like winter.|夏が好きな人もいれば、冬が好きな人もいる。|C
+take care of|～の世話をする|Please take care of my dog.|私の犬の世話をしてください。|B
+take part in|～に参加する|I took part in the volunteer activity.|ボランティア活動に参加した。|C
+thanks to|～のおかげで|Thanks to you, I passed the exam.|あなたのおかげで試験に合格した。|C
+That's too bad.|それはお気の毒に。|That's too bad. I hope you get well soon.|それはお気の毒に。早く良くなるといいね。|B
+these days|最近|These days, I often read books.|最近よく本を読む。|B
+think of|～のことを考える、思いつく|What do you think of this idea?|この考えをどう思う？|B
+throw away|捨てる|Don't throw away plastic bottles here.|ここにペットボトルを捨てないで。|B
+too ~ to ...|～すぎて…できない|This box is too heavy to carry.|この箱は重すぎて運べない。|C
+try on|試着する|May I try on this shirt?|このシャツを試着してもいいですか。|C
+turn off|（電気などを）消す|Turn off the lights.|電気を消して。|B
+used to|以前は～だった、よく～したものだ|There used to be a big tree here.|以前ここに大きな木があった。|C
+wait for|～を待つ|I'm waiting for the bus.|バスを待っている。|A
+Why don't you ~?|～してはどうですか|Why don't you ask your teacher?|先生に聞いてみたらどう？|B
+Would you like ~?|～はいかがですか|Would you like some tea?|お茶はいかがですか。|B
+`;
+
+const POSL = {動:'動詞',名:'名詞',形:'形容詞',副:'副詞',前:'前置詞・接続詞',熟:'熟語・会話'};
+const POS_ORDER = ['動','名','形','副','前','熟'];
+const LV = {A:'基本',B:'標準',C:'発展'};
+const WORDS = [];
+(function parse(){
+  let cur = '';
+  RAW.split('\n').forEach(l => {
+    l = l.trim(); if (!l) return;
+    if (l[0] === '#') { cur = l.slice(1); return; }
+    const [w, ja, ex, exja, lv, forms] = l.split('|');
+    WORDS.push({ id: cur + ':' + w, w, ja, ex, exja, lv, forms: forms || '', pos: cur });
+  });
+})();
+const BYID = Object.fromEntries(WORDS.map(x => [x.id, x]));
+
+/* ---------- 状態と保存 ---------- */
+const LS_KEY = 'yamanashi-nyushi-eitango-v1';
+const DEF_SET = { pos: [...POS_ORDER], lv: ['A','B','C'], dir: 'ej', size: 20, auto: true, weak: false };
+let S = { p: {}, days: [], settings: { ...DEF_SET } };
+let hadLocalSettings = false;
+try {
+  const raw = localStorage.getItem(LS_KEY);
+  if (raw) { const o = JSON.parse(raw); S.p = o.p || {}; S.days = o.days || []; if (o.settings) { S.settings = { ...DEF_SET, ...o.settings }; hadLocalSettings = true; } }
+} catch (e) {}
+
+function today() { const d = new Date(); return Math.floor((d.getTime() - d.getTimezoneOffset() * 60000) / 864e5); }
+const INTERVAL = [0, 0, 1, 3, 7, 14];
+const st = id => S.p[id];
+const isLearned = id => (st(id)?.b || 0) >= 3;
+const isWeak = id => { const e = st(id); return !!e && e.x > 0 && e.b < 3; };
+const isSeen = id => !!st(id);
+function isDue(id) { const e = st(id); if (!e) return true; return today() - e.d >= INTERVAL[e.b]; }
+
+let db = null, docRef = null, saving = false, pendingSave = false, saveTimer = null, syncMode = 'local';
+function persist() {
+  try { localStorage.setItem(LS_KEY, JSON.stringify(S)); } catch (e) {}
+  if (!docRef) return;
+  clearTimeout(saveTimer); saveTimer = setTimeout(pushRemote, 1500);
+}
+async function pushRemote() {
+  if (!docRef) return;
+  if (saving) { pendingSave = true; return; }
+  saving = true;
+  try { await docRef.set({ v: 1, p: S.p, days: S.days.slice(-90), settings: S.settings }); }
+  catch (e) { if (e && (e.code === 'invalid_argument' || e.code === 'revoked' || e.code === 'not_granted')) { docRef = null; setSync('local'); } }
+  finally { saving = false; if (pendingSave) { pendingSave = false; pushRemote(); } }
+}
+function mergeRemote(r) {
+  if (!r) return;
+  const rp = r.p || {};
+  for (const id in rp) {
+    const a = S.p[id], b = rp[id];
+    if (!a || b.n > a.n || (b.n === a.n && b.d > a.d)) S.p[id] = b;
+  }
+  S.days = [...new Set([...(S.days || []), ...(r.days || [])])].sort((a, b) => a - b).slice(-90);
+  if (r.settings && !hadLocalSettings) S.settings = { ...DEF_SET, ...r.settings };
+}
+async function initSync() {
+  try {
+    if (!window.claude || !window.claude.use) return;
+    const [d, u] = await Promise.all([window.claude.use('db'), window.claude.use('user')]);
+    if (!d || !u) return;
+    const uid = await u.id();
+    if (!uid) return;
+    db = d; docRef = db.doc('data/users/' + uid + '/progress');
+    const snap = await docRef.get();
+    if (snap.exists) mergeRemote(snap.data());
+    setSync('cloud');
+    try { localStorage.setItem(LS_KEY, JSON.stringify(S)); } catch (e) {}
+    if (Object.keys(S.p).length) pushRemote();
+    render();
+  } catch (e) { docRef = null; setSync('local'); }
+}
+function setSync(m) { syncMode = m; const el = document.getElementById('sync'); if (el) renderSync(el); }
+function renderSync(el) {
+  el.className = 'sync' + (syncMode === 'cloud' ? ' cloud' : '');
+  el.innerHTML = '<i></i>' + (syncMode === 'cloud' ? '学習記録は claude.ai のアカウントに保存されます（ほかの端末でも続きから）' : '学習記録はこの端末のブラウザに保存されます');
+}
+document.addEventListener('visibilitychange', () => { if (document.hidden && docRef) { clearTimeout(saveTimer); pushRemote(); } });
+
+/* ---------- 共通 ---------- */
+const $ = s => document.querySelector(s);
+const esc = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const shuffle = a => { for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
+const SPK = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 5 6 9H3v6h3l5 4z" fill="currentColor" stroke="none"/><path d="M15.5 8.5a5 5 0 0 1 0 7M18.5 5.5a9 9 0 0 1 0 13"/></svg>';
+function speak(t) {
+  try {
+    const s = window.speechSynthesis; if (!s) return;
+    s.cancel();
+    const u = new SpeechSynthesisUtterance(t.replace(/~|\.\.\./g, ' ').replace(/\bA\b(?= or| and| but)/g, 'this').replace(/\bB\b/g, 'that'));
+    u.lang = 'en-US'; u.rate = 0.9; s.speak(u);
+  } catch (e) {}
+}
+function hl(it) {
+  const ex = esc(it.ex);
+  if (it.pos === '熟') return ex;
+  const alts = [it.w, ...(it.forms ? it.forms.split('-') : [])].map(w => (w.length > 3 && /[ey]$/.test(w)) ? w.slice(0, -1) : w);
+  const re = new RegExp('\\b(' + [...new Set(alts)].join('|') + ')[a-z]*', 'i');
+  return ex.replace(re, m => '<b>' + m + '</b>');
+}
+let toastT;
+function toast(msg) { const t = $('#toast'); t.textContent = msg; t.hidden = false; clearTimeout(toastT); toastT = setTimeout(() => t.hidden = true, 2200); }
+function markDay() { const d = today(); if (!S.days.includes(d)) S.days.push(d); S.days = S.days.slice(-90); }
+function streak() {
+  const set = new Set(S.days); let d = today(); if (!set.has(d)) d--; let n = 0;
+  while (set.has(d)) { n++; d--; } return n;
+}
+function todayCount() { const d = today(); return Object.values(S.p).filter(e => e.d === d).length; }
+function scopePool(mode) {
+  const s = S.settings;
+  return WORDS.filter(x => s.pos.includes(x.pos) && s.lv.includes(x.lv) && (mode !== 'spell' || x.pos !== '熟') && (!s.weak || isWeak(x.id)));
+}
+
+/* ---------- ホーム ---------- */
+let resetArmed = false;
+function renderHome() {
+  const total = WORDS.length;
+  const learned = WORDS.filter(x => isLearned(x.id)).length;
+  const seen = WORDS.filter(x => isSeen(x.id) && !isLearned(x.id)).length;
+  const weakN = WORDS.filter(x => isWeak(x.id)).length;
+  const s = S.settings;
+  const pool = scopePool();
+  const chip = (grp, val, label, on) => `<button class="chip" data-grp="${grp}" data-val="${val}" aria-pressed="${on}">${label}</button>`;
+  $('#home').innerHTML = `
+    <header>
+      <div class="eyebrow">山梨県公立高校入試 対策</div>
+      <h1>入試英単語</h1>
+    </header>
+    <section class="summary" aria-label="学習の進み具合">
+      <div class="sumrow">
+        <div class="big num">${learned}<small> / ${total}語 覚えた</small></div>
+      </div>
+      <div class="bar" role="img" aria-label="覚えた ${learned}語、学習中 ${seen}語">
+        <i class="l" style="width:${learned / total * 100}%"></i><i class="s" style="width:${seen / total * 100}%"></i>
+      </div>
+      <div class="legend"><span style="--c:var(--grape)">覚えた</span><span style="--c:var(--grape-soft)">学習中</span><span style="--c:var(--line)">まだ</span></div>
+      <div class="meta"><span>今日 <b class="num">${todayCount()}</b> 語</span><span>連続 <b class="num">${streak()}</b> 日</span><span>苦手 <b class="num">${weakN}</b> 語</span></div>
+    </section>
+    <section>
+      <h2>学習をはじめる</h2>
+      <div class="modes">
+        <button class="mode" data-mode="card"><span class="ic">Aa</span><span><b>カードで覚える</b><span>めくって意味を確認。わかったら「覚えた」</span></span><span class="go" aria-hidden="true">›</span></button>
+        <button class="mode" data-mode="quiz"><span class="ic">4</span><span><b>4択テスト</b><span>正しい意味を選ぶ。間違えた語は苦手に入る</span></span><span class="go" aria-hidden="true">›</span></button>
+        <button class="mode" data-mode="spell"><span class="ic">✎</span><span><b>スペル練習</b><span>日本語から英単語を書く（英作文・記述対策）</span></span><span class="go" aria-hidden="true">›</span></button>
+      </div>
+    </section>
+    <section class="panel" aria-label="出題範囲">
+      <div class="field"><span class="lab">品詞</span><div class="chips">${POS_ORDER.map(p => chip('pos', p, POSL[p], s.pos.includes(p))).join('')}</div></div>
+      <div class="field"><span class="lab">レベル</span><div class="chips">${Object.keys(LV).map(l => chip('lv', l, LV[l], s.lv.includes(l))).join('')}</div></div>
+      <div class="field"><span class="lab">出題の向き（カード・4択）</span><div class="chips">${chip('dir', 'ej', '英語 → 日本語', s.dir === 'ej')}${chip('dir', 'je', '日本語 → 英語', s.dir === 'je')}</div></div>
+      <div class="field"><span class="lab">1回の問題数</span><div class="chips">${[10, 20, 30].map(n => chip('size', n, n + '問', s.size === n)).join('')}</div></div>
+      <div class="field"><span class="lab">発音</span><div class="chips">${chip('auto', 1, '自動で読み上げる', s.auto)}</div></div>
+      <button class="weakbtn" id="weak" aria-pressed="${s.weak}">苦手な語だけ出す（${weakN}語）</button>
+      <div class="scopecount">出題範囲 <b class="num">${pool.length}</b> 語</div>
+      <p class="note">レベルの目安：基本＝中1〜2の必須語、標準＝入試頻出、発展＝長文・英作文で差がつく語。</p>
+    </section>
+    <section>
+      <h2>品詞ごとの進み具合</h2>
+      <div class="posrows">${POS_ORDER.map(p => {
+        const ws = WORDS.filter(x => x.pos === p), n = ws.length;
+        const l = ws.filter(x => isLearned(x.id)).length, sn = ws.filter(x => isSeen(x.id) && !isLearned(x.id)).length;
+        return `<div class="posrow"><span>${POSL[p]}</span><div class="bar"><i class="l" style="width:${l / n * 100}%"></i><i class="s" style="width:${sn / n * 100}%"></i></div><span class="num">${l}/${n}</span></div>`;
+      }).join('')}</div>
+    </section>
+    <div id="sync"></div>
+    <div><button class="danger${resetArmed ? ' arm' : ''}" id="reset">${resetArmed ? 'もう一度押すと記録をすべて消します' : '学習記録をリセット'}</button></div>
+  `;
+  renderSync($('#sync'));
+}
+$('#home').addEventListener('click', e => {
+  const m = e.target.closest('[data-mode]');
+  if (m) { startSession(m.dataset.mode); return; }
+  const c = e.target.closest('.chip');
+  if (c) {
+    const s = S.settings, g = c.dataset.grp, v = c.dataset.val;
+    if (g === 'pos' || g === 'lv') {
+      const arr = s[g]; const i = arr.indexOf(v);
+      if (i >= 0) { if (arr.length === 1) { toast('1つ以上選んでください'); return; } arr.splice(i, 1); } else arr.push(v);
+    } else if (g === 'dir') s.dir = v;
+    else if (g === 'size') s.size = +v;
+    else if (g === 'auto') s.auto = !s.auto;
+    hadLocalSettings = true; persist(); renderHome(); return;
+  }
+  if (e.target.closest('#weak')) {
+    if (!S.settings.weak && !WORDS.some(x => isWeak(x.id))) { toast('苦手な語はまだありません'); return; }
+    S.settings.weak = !S.settings.weak; persist(); renderHome(); return;
+  }
+  if (e.target.closest('#reset')) {
+    if (!resetArmed) { resetArmed = true; renderHome(); setTimeout(() => { if (resetArmed) { resetArmed = false; renderHome(); } }, 4000); return; }
+    resetArmed = false; S.p = {}; S.days = []; S.settings.weak = false; persist(); if (docRef) { clearTimeout(saveTimer); pushRemote(); }
+    renderHome(); toast('学習記録をリセットしました');
+  }
+});
+
+/* ---------- 一覧 ---------- */
+let listQ = '', listF = 'all', openId = null;
+function renderList() {
+  const fs = [['all', 'すべて'], ['weak', '苦手'], ['learn', '覚えた'], ['new', 'まだ']];
+  $('#list').innerHTML = `
+    <header><div class="eyebrow">全${WORDS.length}語</div><h1>単語一覧</h1></header>
+    <input id="q" class="search" type="search" placeholder="英語か日本語で探す" value="${esc(listQ)}" autocomplete="off" autocapitalize="off" spellcheck="false">
+    <div class="seg">${fs.map(([k, l]) => `<button class="chip" data-f="${k}" aria-pressed="${listF === k}">${l}</button>`).join('')}</div>
+    <div class="wl" id="wl"></div>`;
+  renderRows();
+}
+function renderRows() {
+  const q = listQ.trim().toLowerCase();
+  const rows = WORDS.filter(x => {
+    if (q && !x.w.toLowerCase().includes(q) && !x.ja.includes(q)) return false;
+    if (listF === 'weak') return isWeak(x.id);
+    if (listF === 'learn') return isLearned(x.id);
+    if (listF === 'new') return !isSeen(x.id);
+    return true;
+  });
+  const dot = id => isLearned(id) ? 'learn' : isWeak(id) ? 'weak' : isSeen(id) ? 'seen' : '';
+  $('#wl').innerHTML = rows.length ? rows.map(x => `
+    <div class="wrow">
+      <button data-id="${esc(x.id)}" aria-expanded="${openId === x.id}"><span class="dot ${dot(x.id)}"></span><span style="min-width:0"><span class="en">${esc(x.w)}</span><span class="ja">${esc(x.ja)}</span></span><span class="tag ${x.lv}">${POSL[x.pos].slice(0, 3)}・${LV[x.lv]}</span></button>
+      ${openId === x.id ? `<div class="wdetail">${x.forms ? `<div class="forms">${esc(x.w)} – ${x.forms.split('-').map(esc).join(' – ')}</div>` : ''}<div class="ex">${hl(x)}</div><div class="exja">${esc(x.exja)}</div><button class="spk" data-say="${esc(x.id)}">${SPK}発音を聞く</button></div>` : ''}
+    </div>`).join('') : '<div class="empty">該当する単語はありません</div>';
+}
+$('#list').addEventListener('input', e => { if (e.target.id === 'q') { listQ = e.target.value; renderRows(); } });
+$('#list').addEventListener('click', e => {
+  const f = e.target.closest('[data-f]'); if (f) { listF = f.dataset.f; renderList(); return; }
+  const sp = e.target.closest('[data-say]'); if (sp) { const x = BYID[sp.dataset.say]; speak(x.w); return; }
+  const r = e.target.closest('[data-id]'); if (r) { openId = openId === r.dataset.id ? null : r.dataset.id; renderRows(); }
+});
+
+/* ---------- 学習セッション ---------- */
+let Q = null;
+function pickItems(mode) {
+  const pool = scopePool(mode);
+  const scored = pool.map(x => {
+    const e = st(x.id); let sc = Math.random();
+    if (!e) sc += 2; else if (isWeak(x.id)) sc += isDue(x.id) ? 3.2 : 1.2; else if (isDue(x.id)) sc += 1.5; else sc *= 0.5;
+    return [sc, x];
+  }).sort((a, b) => b[0] - a[0]);
+  return shuffle(scored.slice(0, S.settings.size).map(a => a[1]));
+}
+function startSession(mode, items) {
+  items = items || pickItems(mode);
+  if (!items.length) { toast('出題範囲に単語がありません'); return; }
+  Q = { mode, items, i: 0, res: [], flipped: false, answered: null, choices: null, typed: '' };
+  prep(); $('#study').hidden = false; document.body.style.overflow = 'hidden'; renderStudy();
+}
+function prep() {
+  Q.flipped = false; Q.answered = null; Q.typed = '';
+  if (Q.mode === 'quiz') {
+    const it = Q.items[Q.i], key = S.settings.dir === 'ej' ? 'ja' : 'w';
+    const others = shuffle(WORDS.filter(x => x.pos === it.pos && x.id !== it.id && x[key] !== it[key])).slice(0, 3);
+    Q.choices = shuffle([it, ...others]);
+  }
+  const it = Q.items[Q.i];
+  if (S.settings.auto && Q.mode !== 'spell' && S.settings.dir === 'ej') speak(it.w);
+}
+function record(it, ok, known) {
+  const e = S.p[it.id] || { b: 0, d: 0, n: 0, x: 0 };
+  e.n++; e.d = today();
+  if (ok) e.b = known ? Math.max(e.b + 1, 3) : Math.min(5, e.b + 1);
+  else { e.b = 1; e.x++; }
+  e.b = Math.min(5, e.b);
+  S.p[it.id] = e; markDay(); persist();
+  Q.res.push({ it, ok });
+}
+function next() {
+  Q.i++;
+  if (Q.i >= Q.items.length) { Q.done = true; renderStudy(); return; }
+  prep(); renderStudy();
+}
+function closeStudy() { $('#study').hidden = true; document.body.style.overflow = ''; Q = null; try { speechSynthesis.cancel(); } catch (e) {} render(); }
+function answerBlock(it) {
+  return `<div class="ans">
+    <div class="headword" style="font-size:26px">${esc(it.w)}</div>
+    <div class="ja">${esc(it.ja)}</div>
+    ${it.forms ? `<div class="forms">${esc(it.w)} – ${it.forms.split('-').map(esc).join(' – ')}</div>` : ''}
+    <div class="ex">${hl(it)}</div><div class="exja">${esc(it.exja)}</div>
+    <button class="spk" data-act="say">${SPK}発音を聞く</button>
+  </div>`;
+}
+function renderStudy() {
+  const el = $('#study');
+  if (Q.done) {
+    const ok = Q.res.filter(r => r.ok).length, miss = Q.res.filter(r => !r.ok);
+    const label = Q.mode === 'card' ? '覚えた' : '正解';
+    el.innerHTML = `<div class="sin"><div class="shead"><button class="x" data-act="close" aria-label="閉じる">×</button><div class="prog"><i style="width:100%"></i></div><span class="scount num">完了</span></div>
+      <div class="sbody"><div class="res">
+        <div class="eyebrow">${label}</div>
+        <div class="score num">${ok}<small> / ${Q.res.length}</small></div>
+        ${miss.length ? `<h2 style="margin:6px 0 0">${Q.mode === 'card' ? 'まだの語' : '間違えた語'}（${miss.length}）</h2><div class="missl">${miss.map(r => `<div><span class="en">${esc(r.it.w)}</span><span class="ja">${esc(r.it.ja)}</span></div>`).join('')}</div>` : '<p>全部できました。次は別のモードでも確かめてみましょう。</p>'}
+      </div></div>
+      <div class="sfoot">${miss.length ? '<button class="btn ghost" data-act="home">ホームへ</button><button class="btn" data-act="retry">間違えた語をもう一度</button>' : '<button class="btn ghost" data-act="home">ホームへ</button><button class="btn" data-act="again">続けて学習する</button>'}</div></div>`;
+    return;
+  }
+  const it = Q.items[Q.i], n = Q.items.length, ej = S.settings.dir === 'ej';
+  const head = `<div class="shead"><button class="x" data-act="close" aria-label="学習をやめる">×</button><div class="prog"><i style="width:${Q.i / n * 100}%"></i></div><span class="scount num">${Q.i + 1} / ${n}</span></div>`;
+  const posTag = `<span class="tag poslab ${it.lv}">${POSL[it.pos]}・${LV[it.lv]}</span>`;
+  let body = '', foot = '';
+  if (Q.mode === 'card') {
+    const front = ej ? `<div class="headword">${esc(it.w)}</div>` : `<div class="headja">${esc(it.ja)}</div>`;
+    body = Q.flipped
+      ? `<div class="wcard">${posTag}${front}${answerBlock(it)}</div>`
+      : `<button class="wcard" data-act="flip" aria-label="カードをめくる">${posTag}${front}<div class="hint">タップして答えを見る</div></button>`;
+    foot = Q.flipped ? '<button class="btn ng" data-act="no">まだ</button><button class="btn ok" data-act="yes">覚えた</button>' : '<button class="btn" data-act="flip">答えを見る</button>';
+  } else if (Q.mode === 'quiz') {
+    const prompt = ej ? `<div class="headword">${esc(it.w)}</div>` : `<div class="headja">${esc(it.ja)}</div>`;
+    const a = Q.answered;
+    body = `<div class="wcard" style="min-height:150px">${posTag}${prompt}${a ? `<div class="verdict ${a.ok ? 'ok' : 'ng'}">${a.ok ? '正解' : '不正解'}</div>` : '<div class="hint">' + (ej ? '意味を選んでください' : '英語を選んでください') + '</div>'}</div>
+      <div class="choices">${Q.choices.map((c, k) => {
+        let cls = 'choice' + (ej ? '' : ' en');
+        if (a) { if (c.id === it.id) cls += ' right'; else if (k === a.k) cls += ' wrong'; }
+        return `<button class="${cls}" data-act="pick" data-k="${k}" ${a ? 'disabled' : ''}>${esc(ej ? c.ja : c.w)}</button>`;
+      }).join('')}</div>${a ? answerBlock(it) : ''}`;
+    foot = a ? `<button class="btn" data-act="next">${Q.i + 1 < n ? '次へ' : '結果を見る'}</button>` : '';
+  } else {
+    const a = Q.answered;
+    const letters = it.w.split('').map((ch, k) => k === 0 ? ch : (ch === ' ' ? '  ' : '_')).join(' ');
+    body = `<div class="wcard" style="min-height:170px">${posTag}<div class="headja">${esc(it.ja)}</div><div class="letters" aria-label="${it.w.length}文字、${esc(it.w[0])}で始まる">${esc(letters)}</div><div class="hint">${it.w.length}文字</div>${a ? `<div class="verdict ${a.ok ? 'ok' : 'ng'}">${a.ok ? '正解' : '正しくは ' + esc(it.w)}</div>` : ''}</div>
+      <form id="spf" autocomplete="off"><input id="spin" class="spell${a ? (a.ok ? ' ok' : ' ng') : ''}" type="text" inputmode="latin" autocapitalize="off" autocorrect="off" spellcheck="false" placeholder="英語で入力" value="${esc(Q.typed)}" ${a ? 'readonly' : ''} aria-label="英単語を入力"></form>
+      ${a ? answerBlock(it) : ''}`;
+    foot = a ? `<button class="btn" data-act="next">${Q.i + 1 < n ? '次へ' : '結果を見る'}</button>` : '<button class="btn ghost" data-act="giveup">わからない</button><button class="btn" data-act="check">答え合わせ</button>';
+  }
+  el.innerHTML = `<div class="sin">${head}<div class="sbody">${body}</div><div class="sfoot">${foot}</div></div>`;
+  if (Q.mode === 'spell' && !Q.answered) { const inp = $('#spin'); setTimeout(() => { try { inp.focus(); } catch (e) {} }, 50); }
+}
+function checkSpell(give) {
+  const it = Q.items[Q.i], v = ($('#spin')?.value || '').trim();
+  if (!give && !v) { toast('英単語を入力してください'); return; }
+  Q.typed = v;
+  const ok = !give && v.toLowerCase().replace(/\s+/g, ' ') === it.w.toLowerCase();
+  Q.answered = { ok }; record(it, ok); renderStudy(); speak(it.w);
+}
+$('#study').addEventListener('submit', e => { e.preventDefault(); if (Q && Q.mode === 'spell' && !Q.answered) checkSpell(false); });
+$('#study').addEventListener('click', e => {
+  const b = e.target.closest('[data-act]'); if (!b || !Q) return;
+  const act = b.dataset.act, it = Q.items[Q.i];
+  if (act === 'close' || act === 'home') return closeStudy();
+  if (act === 'say') { speak(it ? it.w : ''); e.stopPropagation(); return; }
+  if (act === 'flip') { if (!Q.flipped) { Q.flipped = true; renderStudy(); if (S.settings.auto && S.settings.dir === 'je') speak(it.w); } return; }
+  if (act === 'yes' || act === 'no') { record(it, act === 'yes', act === 'yes' && !isSeen(it.id)); next(); return; }
+  if (act === 'pick') {
+    const k = +b.dataset.k, ok = Q.choices[k].id === it.id;
+    Q.answered = { ok, k }; record(it, ok); renderStudy();
+    if (S.settings.auto && S.settings.dir === 'je') speak(it.w);
+    return;
+  }
+  if (act === 'next') return next();
+  if (act === 'check') return checkSpell(false);
+  if (act === 'giveup') return checkSpell(true);
+  if (act === 'retry') { const mode = Q.mode, items = shuffle(Q.res.filter(r => !r.ok).map(r => r.it)); return startSession(mode, items); }
+  if (act === 'again') { const mode = Q.mode; return startSession(mode); }
+});
+
+/* ---------- タブ ---------- */
+let tab = 'home';
+function render() { if (tab === 'home') renderHome(); else renderList(); }
+function setTab(t) {
+  tab = t; $('#home').hidden = t !== 'home'; $('#list').hidden = t !== 'list';
+  $('#tab-home').setAttribute('aria-current', t === 'home' ? 'page' : 'false');
+  $('#tab-list').setAttribute('aria-current', t === 'list' ? 'page' : 'false');
+  render(); window.scrollTo(0, 0);
+}
+$('#tab-home').onclick = () => setTab('home');
+$('#tab-list').onclick = () => setTab('list');
+if (location.hash === '#list') setTab('list'); else render();
+initSync();
+</script>
+</body>
+</html>
