@@ -9,6 +9,11 @@
 <meta name="theme-color" content="#121514" media="(prefers-color-scheme: dark)">
 <style>:root{color-scheme:light}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
 <title>山梨入試 英単語</title>
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" type="image/png" sizes="32x32" href="icons/favicon-32.png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-title" content="入試英単語">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,600;1,6..72,400&family=Zen+Kaku+Gothic+New:wght@400;500;700&display=swap">
@@ -164,6 +169,16 @@ h2{font-size:13px;letter-spacing:.06em;color:var(--muted);margin:0 0 10px;font-w
 .missl .en{font-family:var(--f-en);font-size:18px;font-weight:600}
 .missl .ja{color:var(--muted);text-align:right;min-width:0}
 
+/* ホーム画面に追加 */
+.install{display:grid;grid-template-columns:52px minmax(0,1fr);gap:12px 14px;align-items:start;background:var(--grape-soft);border-radius:var(--r);padding:14px 16px}
+.install img{width:52px;height:52px;border-radius:12px}
+.install b{display:block;font-size:15px}
+.install p{margin:2px 0 0;font-size:13px;line-height:1.6}
+.install p b{display:inline;font-size:inherit}
+.install .row{grid-column:1/-1;display:flex;gap:8px;flex-wrap:wrap}
+.install .row button{border-radius:10px;padding:9px 14px;font-size:14px;border:1px solid var(--grape);background:transparent;color:var(--grape);font-weight:500}
+.install .row button.primary{background:var(--grape);color:var(--on-grape);font-weight:700}
+.install .later{margin-left:auto;border:0!important;color:var(--muted)!important;font-size:13px!important;padding-inline:4px!important}
 .toast{position:fixed;left:50%;bottom:calc(84px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:9px 16px;border-radius:99px;font-size:13px;z-index:20;max-width:calc(100% - 32px)}
 @media (prefers-reduced-motion: reduce){*{transition:none!important}}
 </style>
@@ -709,6 +724,7 @@ function renderHome() {
       <div class="eyebrow">山梨県公立高校入試 対策</div>
       <h1>入試英単語</h1>
     </header>
+    ${installHTML()}
     <section class="summary" aria-label="学習の進み具合">
       <div class="sumrow">
         <div class="big num">${learned}<small> / ${total}語 覚えた</small></div>
@@ -764,6 +780,9 @@ $('#home').addEventListener('click', e => {
     else if (g === 'auto') s.auto = !s.auto;
     hadLocalSettings = true; persist(); renderHome(); return;
   }
+  if (e.target.closest('#btn-install')) { doInstall(); return; }
+  if (e.target.closest('#btn-copyurl')) { copyUrl(); return; }
+  if (e.target.closest('#btn-later')) { try { localStorage.setItem(LS_KEY + '-install-later', String(today())); } catch (er) {} renderHome(); return; }
   if (e.target.closest('#weak')) {
     if (!S.settings.weak && !WORDS.some(x => isWeak(x.id))) { toast('苦手な語はまだありません'); return; }
     S.settings.weak = !S.settings.weak; persist(); renderHome(); return;
@@ -944,6 +963,72 @@ function setTab(t) {
 }
 $('#tab-home').onclick = () => setTab('home');
 $('#tab-list').onclick = () => setTab('list');
+/* ---------- ホーム画面に追加（PWA） ----------
+   Android の Chrome などはボタン1つで追加できる。iPhone は手順を案内する。
+   アプリ内ブラウザ（LINE など）では追加できないので、ブラウザで開き直すよう案内する */
+let deferredPrompt = null;
+function isStandalone() {
+  try {
+    return matchMedia('(display-mode: standalone)').matches || matchMedia('(display-mode: fullscreen)').matches || navigator.standalone === true;
+  } catch (e) { return false; }
+}
+function browserInfo() {
+  const ua = navigator.userAgent;
+  if (/Line\//i.test(ua)) return { inapp: 'LINE' };
+  if (/FBAN|FBAV|FB_IAB/i.test(ua)) return { inapp: 'Facebook' };
+  if (/Instagram/i.test(ua)) return { inapp: 'Instagram' };
+  if (/Twitter/i.test(ua)) return { inapp: 'X（Twitter）' };
+  if (/; wv\)/.test(ua)) return { inapp: 'ほかのアプリ' };
+  if (/iPhone|iPad|iPod/.test(ua) || (/Macintosh/.test(ua) && navigator.maxTouchPoints > 1)) return { ios: true, notSafari: /CriOS|FxiOS|EdgiOS/.test(ua) };
+  if (/Android/.test(ua)) return { android: true };
+  return { pc: true };
+}
+function installHTML() {
+  if (isStandalone() || !/^https?:$/.test(location.protocol)) return '';
+  let later = null; try { later = localStorage.getItem(LS_KEY + '-install-later'); } catch (e) {}
+  if (later && today() - +later < 7) return '';
+  const b = browserInfo();
+  let title = 'ホーム画面に追加しよう', msg = '', btn = '';
+  if (deferredPrompt) {
+    msg = 'ボタンを押すと、ホーム画面のアイコンからすぐに学習を始められます。';
+    btn = '<button class="primary" id="btn-install">ホーム画面に追加</button>';
+  } else if (b.inapp) {
+    title = b.inapp + 'の中で開いています';
+    msg = 'このままでは追加できません。画面のすみの <b>⋮</b> や <b>…</b> から <b>「ブラウザで開く」</b> を選んで開き直してください。うまくいかないときは「URLをコピー」して、Safari や Chrome に貼り付けてください。';
+  } else if (b.ios) {
+    msg = b.notSafari
+      ? 'iPhone では <b>Safari</b> で開いてください。Safari の <b>共有ボタン（□に↑）</b> → <b>「ホーム画面に追加」</b> を選びます。'
+      : '画面下の <b>共有ボタン（□に↑）</b> を押し、メニューを下にたどって <b>「ホーム画面に追加」</b> を選んでください。';
+  } else if (b.android) {
+    msg = 'Chrome の <b>⋮</b> メニューから <b>「ホーム画面に追加」</b>（または「アプリをインストール」）を選んでください。';
+  } else {
+    title = 'スマホでも使えます';
+    msg = 'スマホのブラウザでこのページを開き、ホーム画面に追加すると、アプリと同じように使えます。';
+  }
+  return `<section class="install" aria-label="ホーム画面に追加">
+    <img src="icons/icon-192.png" alt="">
+    <div><b>${title}</b><p>${msg}</p></div>
+    <div class="row">${btn}<button id="btn-copyurl">URLをコピー</button><button class="later" id="btn-later">あとで</button></div>
+  </section>`;
+}
+async function doInstall() {
+  if (!deferredPrompt) { renderHome(); return; }
+  const p = deferredPrompt; deferredPrompt = null;
+  try { p.prompt(); const r = await p.userChoice; if (r && r.outcome === 'accepted') toast('ホーム画面に追加しました'); } catch (e) {}
+  renderHome();
+}
+function copyUrl() {
+  const url = location.href.split('#')[0];
+  (navigator.clipboard ? navigator.clipboard.writeText(url) : Promise.reject())
+    .then(() => toast('URLをコピーしました'))
+    .catch(() => toast(url));
+}
+window.addEventListener('beforeinstallprompt', e => { e.preventDefault(); deferredPrompt = e; if (tab === 'home' && !Q) renderHome(); });
+window.addEventListener('appinstalled', () => { deferredPrompt = null; toast('ホーム画面に追加しました'); renderHome(); });
+if ('serviceWorker' in navigator && /^https?:$/.test(location.protocol)) {
+  navigator.serviceWorker.register('sw.js').catch(() => {});
+}
+
 if (location.hash === '#list') setTab('list'); else render();
 initSync();
 </script>

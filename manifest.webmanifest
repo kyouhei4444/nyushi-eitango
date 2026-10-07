@@ -1,0 +1,18 @@
+{
+  "name": "山梨入試 英単語",
+  "short_name": "入試英単語",
+  "description": "山梨県公立高校入試向けの英単語・熟語をカード・4択・スペル練習で覚えるアプリ",
+  "lang": "ja",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#eef0ec",
+  "theme_color": "#5b2c6f",
+  "categories": ["education"],
+  "icons": [
+    { "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "icons/icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}
