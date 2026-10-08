@@ -110,7 +110,7 @@ h2{font-size:13px;letter-spacing:.06em;color:var(--muted);margin:0 0 10px;font-w
 .wrow .en{font-family:var(--f-en);font-size:19px;font-weight:600;line-height:1.2}
 .wrow .ja{font-size:13px;color:var(--muted);display:block;overflow-wrap:anywhere}
 .tag{font-size:11px;border:1px solid var(--line);border-radius:6px;padding:1px 6px;color:var(--muted);white-space:nowrap}
-.tag.C{border-color:var(--grape);color:var(--grape)}
+.tag.A{border-color:var(--grape);color:var(--grape)}
 .wdetail{padding:0 2px 14px 24px;display:flex;flex-direction:column;gap:6px;font-size:14px}
 .ex{font-family:var(--f-en);font-size:17px;line-height:1.45}
 .ex b{color:var(--grape);font-weight:600}
@@ -197,419 +197,422 @@ h2{font-size:13px;letter-spacing:.06em;color:var(--muted);margin:0 0 10px;font-w
 <div id="toast" class="toast" hidden></div>
 
 <script>
-/* 単語データ: 単語|意味|例文|例文訳|レベル(A基本 B標準 C発展)|不規則変化 */
+/* 単語データ: 単語|意味|例文|例文訳|レベル|不規則変化|出題年数
+   出題年数 = 2021〜2026年度の山梨県公立高校入試（英語）6年分のうち、その語が出た年の数。
+   レベルは出題年数から決める（A 最頻出=4〜6年、B 頻出=2〜3年、C 重要=1年以下） */
 const RAW = `
 #動
-accept|受け入れる、受け取る|He accepted my advice.|彼は私の助言を受け入れた。|B
-add|加える|Add some salt to the soup.|スープに塩を少し加えて。|B
-agree|賛成する、同意する|I agree with your idea.|私はあなたの考えに賛成です。|A
-allow|許す、許可する|My father allowed me to use his camera.|父は私がカメラを使うのを許してくれた。|B
-arrive|到着する|We arrived at the station at six.|私たちは6時に駅に着いた。|A
-become|～になる|She became a doctor.|彼女は医者になった。|A|became-become
-begin|始める、始まる|The concert began at seven.|コンサートは7時に始まった。|A|began-begun
-believe|信じる|I can't believe it.|それは信じられない。|A
-belong|所属する（to）|I belong to the tennis team.|私はテニス部に所属している。|B
-borrow|借りる|Can I borrow your pen?|ペンを借りてもいいですか。|A
-break|壊す|Who broke the window?|誰が窓を割ったの？|B|broke-broken
-bring|持ってくる、連れてくる|Bring your lunch tomorrow.|明日はお弁当を持ってきなさい。|A|brought-brought
-build|建てる|They built a new library.|彼らは新しい図書館を建てた。|A|built-built
-buy|買う|I bought a book for my sister.|私は妹に本を買った。|A|bought-bought
-carry|運ぶ、持ち歩く|Can you carry this box?|この箱を運んでくれますか。|A
-catch|つかまえる、（乗り物に）間に合う|I caught the first train.|私は始発電車に間に合った。|A|caught-caught
-cause|引き起こす|Cars cause air pollution.|車は大気汚染を引き起こす。|C
-choose|選ぶ|Choose one from these books.|これらの本から1冊選びなさい。|B|chose-chosen
-collect|集める|We collected old cans for recycling.|私たちはリサイクルのために空き缶を集めた。|B
-communicate|意思を伝え合う|We communicated in English.|私たちは英語で意思を伝え合った。|B
-compare|比べる|Compare these two pictures.|この2枚の絵を比べなさい。|C
-continue|続ける|Please continue your story.|話を続けてください。|B
-create|創り出す|Let's create a new event for our town.|町のために新しい行事を作ろう。|B
-decide|決める|I decided to study abroad.|私は留学することに決めた。|B
-decrease|減る、減らす|The number of children is decreasing.|子どもの数が減ってきている。|C
-depend|頼る、～次第である（on）|It depends on the weather.|それは天気次第だ。|C
-describe|描写する、説明する|Describe your town in English.|あなたの町について英語で説明しなさい。|C
-destroy|破壊する|The forest was destroyed by fire.|森は火事で破壊された。|C
-develop|発達させる、開発する|The country developed quickly.|その国は急速に発展した。|C
-disappear|消える|The sun disappeared behind the clouds.|太陽が雲の後ろに消えた。|C
-discover|発見する|He discovered a new star.|彼は新しい星を発見した。|B
-draw|（線で絵を）描く|She drew a picture of Mt. Fuji.|彼女は富士山の絵を描いた。|A|drew-drawn
-encourage|励ます|My teacher encouraged me to try again.|先生はもう一度挑戦するよう励ましてくれた。|C
-exchange|交換する|We exchanged e-mail addresses.|私たちはメールアドレスを交換した。|B
-explain|説明する|Can you explain the rule?|そのルールを説明してくれますか。|B
-express|表現する|It's hard to express my feelings in English.|英語で気持ちを表現するのは難しい。|C
-fail|失敗する、（試験に）落ちる|Don't be afraid to fail.|失敗することを恐れないで。|B
-fall|落ちる、倒れる|Leaves fall in autumn.|秋には葉が落ちる。|A|fell-fallen
-feed|えさをやる|I feed my dog every morning.|私は毎朝犬にえさをやる。|B|fed-fed
-feel|感じる|I feel happy today.|今日は幸せな気分だ。|A|felt-felt
-fill|満たす|Fill the glass with water.|コップを水で満たしなさい。|B
-find|見つける、～とわかる|I found the book interesting.|その本はおもしろいとわかった。|A|found-found
-follow|従う、ついて行く|Please follow me.|私について来てください。|B
-forget|忘れる|Don't forget to bring your lunch.|お弁当を持ってくるのを忘れないで。|A|forgot-forgotten
-graduate|卒業する（from）|My sister graduated from high school.|姉は高校を卒業した。|C
-grow|育つ、育てる、～になる|We grow grapes in Yamanashi.|山梨ではぶどうを育てている。|A|grew-grown
-guess|推測する|Guess what!|ねえ、聞いて！|B
-happen|起こる|What happened?|何が起こったの？|B
-hear|聞こえる、聞く|I heard a strange sound.|変な音が聞こえた。|A|heard-heard
-hold|開催する、持つ|The festival is held every summer.|その祭りは毎年夏に開かれる。|B|held-held
-hope|望む|I hope you'll like it.|気に入ってもらえるといいな。|A
-hurt|傷つける、痛む|My leg hurts.|足が痛い。|B|hurt-hurt
-imagine|想像する|Imagine a world without music.|音楽のない世界を想像してみて。|B
-improve|改善する、上達させる|I want to improve my English.|英語を上達させたい。|C
-increase|増える、増やす|The number of tourists is increasing.|観光客の数が増えている。|C
-introduce|紹介する|Let me introduce myself.|自己紹介させてください。|B
-invent|発明する|Who invented the telephone?|誰が電話を発明したの？|B
-invite|招待する|She invited me to her party.|彼女は私をパーティーに招待してくれた。|B
-join|参加する、加わる|Why don't you join us?|私たちに加わりませんか。|A
-keep|保つ、持ち続ける|Keep your room clean.|部屋をきれいにしておきなさい。|A|kept-kept
-laugh|笑う|Everyone laughed at his joke.|皆が彼の冗談に笑った。|A
-leave|出発する、置き忘れる|I left my umbrella on the train.|電車に傘を置き忘れた。|B|left-left
-lend|貸す|Could you lend me your dictionary?|辞書を貸していただけますか。|B|lent-lent
-lose|失う、負ける|We lost the game.|私たちは試合に負けた。|A|lost-lost
-mean|意味する|What does this word mean?|この単語はどういう意味ですか。|A|meant-meant
-miss|乗り遅れる、いなくて寂しく思う|I missed the bus.|バスに乗り遅れた。|B
-notice|気づく|I noticed a mistake.|私は間違いに気づいた。|B
-order|注文する|I ordered a pizza.|ピザを注文した。|B
-pass|手渡す、合格する|I passed the test.|試験に合格した。|B
-pick|摘む、拾う|We picked strawberries.|私たちはイチゴを摘んだ。|B
-plant|植える|We planted trees in the park.|私たちは公園に木を植えた。|B
-practice|練習する|I practice the piano every day.|私は毎日ピアノを練習する。|A
-prepare|準備する|We prepared for the school festival.|私たちは文化祭の準備をした。|B
-produce|生産する|Yamanashi produces a lot of peaches.|山梨はたくさんの桃を生産している。|C
-promise|約束する|I promise to come back.|戻ってくると約束するよ。|B
-protect|守る|We must protect nature.|私たちは自然を守らなければならない。|B
-raise|上げる、育てる、（お金を）集める|Raise your hand if you know the answer.|答えがわかったら手を挙げて。|C
-reach|到着する、届く|We reached the top of the mountain.|私たちは山頂に到着した。|B
-realize|気づく、実現する|I realized the importance of friends.|友達の大切さに気づいた。|C
-receive|受け取る|I received a letter from Emma.|エマから手紙を受け取った。|B
-recommend|勧める|I recommend this book.|この本をおすすめします。|C
-recycle|リサイクルする|We recycle paper at school.|学校では紙をリサイクルしている。|B
-reduce|減らす|We should reduce plastic waste.|プラスチックごみを減らすべきだ。|C
-remember|覚えている、思い出す|I remember his name.|彼の名前を覚えている。|A
-repeat|繰り返す|Please repeat after me.|私の後について繰り返してください。|A
-respect|尊敬する|I respect my grandfather.|私は祖父を尊敬している。|B
-rise|昇る、上がる|The sun rises in the east.|太陽は東から昇る。|B|rose-risen
-save|救う、節約する、貯める|Let's save energy.|エネルギーを節約しよう。|B
-seem|～のように見える|He seems tired.|彼は疲れているようだ。|C
-sell|売る|They sell fresh fruit at the market.|その市場では新鮮な果物を売っている。|A|sold-sold
-send|送る|I'll send you a picture.|写真を送るね。|A|sent-sent
-share|共有する、分け合う|Let's share our ideas.|考えを共有しよう。|B
-shout|叫ぶ|Don't shout in the library.|図書館で叫ばないで。|B
-smell|においがする|This flower smells sweet.|この花は甘いにおいがする。|B
-solve|解決する、解く|We solved the problem together.|私たちは一緒に問題を解決した。|C
-sound|～に聞こえる、～のようだ|That sounds interesting.|それはおもしろそうだね。|A
-spend|（時間・お金を）使う、過ごす|I spent the weekend with my family.|週末は家族と過ごした。|B|spent-spent
-spread|広がる、広げる|The news spread quickly.|その知らせはすぐに広まった。|C|spread-spread
-support|支える、応援する|My family always supports me.|家族はいつも私を支えてくれる。|B
-surprise|驚かせる|The news surprised everyone.|その知らせは皆を驚かせた。|B
-survive|生き残る|Some animals can't survive the cold winter.|寒い冬を生き延びられない動物もいる。|C
-taste|味がする|This soup tastes good.|このスープはおいしい。|B
-teach|教える|Mr. Ono teaches us math.|小野先生は私たちに数学を教えている。|A|taught-taught
-throw|投げる|He threw the ball to me.|彼は私にボールを投げた。|B|threw-thrown
-travel|旅行する|I want to travel around the world.|世界中を旅行したい。|A
-treat|扱う、もてなす|Treat others kindly.|他人に親切に接しなさい。|C
-trust|信頼する|You can trust him.|彼は信頼できるよ。|C
-understand|理解する|I understand how you feel.|あなたの気持ちはわかります。|A|understood-understood
-visit|訪れる|Many people visit Yamanashi every year.|毎年多くの人が山梨を訪れる。|A
-waste|むだにする|Don't waste food.|食べ物をむだにしないで。|B
-wear|身につけている|She is wearing a yukata.|彼女は浴衣を着ている。|B|wore-worn
-win|勝つ|Our team won the game.|私たちのチームが試合に勝った。|A|won-won
-wish|（～であればいいのにと）願う|I wish I could fly.|空を飛べたらいいのに。|C
-wonder|～かなと思う|I wonder why he is late.|彼はなぜ遅れているのかな。|B
-worry|心配する|Don't worry about it.|それについては心配しないで。|A
+add|加える|Can I add one more idea?|もう一つ考えを加えてもいいですか。|B||2
+agree|賛成する、同意する|I agree with your idea.|私はあなたの考えに賛成です。|B||2
+arrive|到着する|We arrived at the stadium at ten.|私たちは10時にスタジアムに着いた。|C||1
+ask|たずねる、頼む|I asked my teacher to check my speech.|私は先生にスピーチを確認してくれるよう頼んだ。|A||5
+become|～になる|She became a famous scientist.|彼女は有名な科学者になった。|B|became-become|3
+begin|始める、始まる|The festival will begin at nine.|祭りは9時に始まる。|B|began-begun|2
+believe|信じる|I can't believe it.|それは信じられない。|B||3
+borrow|借りる|Can I borrow your umbrella?|かさを借りてもいいですか。|C||1
+burn|燃やす、燃える|Some garbage is burned at the plant.|一部のごみは工場で燃やされる。|B||3
+carry|運ぶ、持ち歩く|I always carry my own bag.|私はいつも自分の袋を持ち歩いている。|B||3
+change|変える、変わる|The Internet has changed our lives.|インターネットは私たちの生活を変えた。|A||4
+check|確認する、調べる|Let's check the information on the website.|ウェブサイトで情報を確認しよう。|B||2
+choose|選ぶ|Choose one topic for your speech.|スピーチの話題を一つ選びなさい。|A|chose-chosen|4
+clean|そうじする、きれいにする|We cleaned the river with local people.|私たちは地域の人たちと川をそうじした。|A||5
+climb|登る|We climbed Mt. Fuji last summer.|私たちは去年の夏に富士山に登った。|B||2
+collect|集める|The students collected used umbrellas.|生徒たちは使われなくなったかさを集めた。|A||5
+communicate|意思を伝え合う|We communicated with gestures.|私たちはジェスチャーで意思を伝え合った。|C||1
+continue|続ける|Let's continue this activity next year.|この活動を来年も続けよう。|B||3
+create|創り出す|They created a new logo for the town.|彼らは町の新しいロゴを作った。|B||3
+cut|切る|Cut the paper into small pieces.|紙を小さく切りなさい。|A|cut-cut|4
+decide|決める|We decided to make a poster.|私たちはポスターを作ることに決めた。|A||6
+design|デザインする、設計する|She designed a bag from old clothes.|彼女は古い服からかばんをデザインした。|B||3
+develop|発達させる、開発する|Scientists developed a new machine.|科学者たちは新しい機械を開発した。|C||1
+draw|（線で絵を）描く|He drew a picture of his hometown.|彼はふるさとの絵を描いた。|B|drew-drawn|3
+enjoy|楽しむ|I enjoyed talking with the ALT.|ALTと話すのを楽しんだ。|A||6
+explain|説明する|Can you explain the rule in English?|そのルールを英語で説明できますか。|C||1
+feel|感じる|I feel happy when I help people.|人を助けると幸せな気持ちになる。|A|felt-felt|6
+fill|満たす、（空所を）うめる|Fill in the blanks with one word.|空所に1語を入れなさい。|B||3
+find|見つける、～とわかる|I found the book interesting.|その本はおもしろいとわかった。|A|found-found|6
+finish|終える|Have you finished your homework?|宿題は終わった？|A||5
+follow|従う、ついて行く|Please follow the rules.|ルールに従ってください。|C||1
+forget|忘れる|Don't forget to bring your textbook.|教科書を持ってくるのを忘れないで。|B|forgot-forgotten|3
+guess|推測する|Can you guess what this is?|これが何か当てられる？|B||2
+happen|起こる|What happened to you?|どうしたの？|B||3
+hear|聞こえる、聞く|I heard about the event from my friend.|友達からその行事について聞いた。|A|heard-heard|6
+help|手伝う、助ける|Can you help me with my homework?|宿題を手伝ってくれる？|A||6
+hold|開催する、持つ|The contest is held every year.|そのコンテストは毎年開かれる。|A|held-held|5
+hope|望む|I hope you'll enjoy your stay.|滞在を楽しんでくれるといいな。|A||5
+imagine|想像する|Imagine life without smartphones.|スマートフォンのない生活を想像してみて。|C||1
+improve|改善する、上達させる|I want to improve my English.|英語を上達させたい。|B||3
+introduce|紹介する|Let me introduce my hometown.|私のふるさとを紹介させてください。|B||3
+invent|発明する|Who invented the telephone?|誰が電話を発明したの？|C||1
+join|参加する、加わる|Why don't you join our club?|私たちの部に入りませんか。|A||5
+keep|保つ、持ち続ける|Keep the river clean.|川をきれいに保とう。|A|kept-kept|5
+learn|学ぶ、身につける|I learned a lot from this experience.|この経験から多くを学んだ。|A||6
+leave|出発する、置いていく、残す|Don't leave food on your plate.|お皿に食べ物を残さないで。|A|left-left|5
+let|～させる|Let me tell you about my plan.|私の計画についてお話しさせてください。|A|let-let|6
+lose|失う、負ける|I lost my umbrella on the train.|電車でかさをなくした。|B|lost-lost|2
+match|合う、一致させる|Choose the picture that matches the story.|話に合う絵を選びなさい。|B||3
+mean|意味する|What does this word mean?|この単語はどういう意味ですか。|A|meant-meant|6
+need|必要とする|We need more volunteers.|もっとボランティアが必要だ。|A||5
+order|注文する|I ordered pizza for lunch.|昼食にピザを注文した。|A||6
+pay|払う|I paid five dollars for this bag.|このかばんに5ドル払った。|B|paid-paid|2
+pick|摘む、拾う|We picked up garbage on the beach.|私たちは海岸でごみを拾った。|C||1
+practice|練習する|I practice the guitar every day.|私は毎日ギターを練習する。|B||2
+produce|生産する|Yamanashi produces a lot of grapes.|山梨はたくさんのぶどうを生産している。|C||1
+protect|守る|We must protect the environment.|私たちは環境を守らなければならない。|B||2
+put|置く|Where should I put this box?|この箱をどこに置けばいいですか。|A|put-put|4
+realize|気づく、実現する|I realized the importance of food.|食べ物の大切さに気づいた。|C||1
+receive|受け取る|I received a message from Emma.|エマからメッセージを受け取った。|C||1
+recommend|勧める|I recommend this restaurant.|このレストランをおすすめします。|B||3
+recycle|リサイクルする|Plastic bottles can be recycled.|ペットボトルはリサイクルできる。|C||1
+reduce|減らす|We should reduce food waste.|食品ロスを減らすべきだ。|B||2
+remember|覚えている、思い出す|I remember my first day at school.|学校の初日のことを覚えている。|B||3
+respect|尊敬する、尊重する|We should respect other cultures.|私たちはほかの文化を尊重するべきだ。|C||1
+return|戻る、返す|Please return the book by Friday.|金曜日までに本を返してください。|B||2
+save|救う、節約する、貯める|Let's save water and energy.|水とエネルギーを節約しよう。|B||2
+search|探す、検索する|I searched for the word on the Internet.|インターネットでその単語を調べた。|C||1
+sell|売る|They sell vegetables at the market.|その市場では野菜を売っている。|A|sold-sold|4
+send|送る|I'll send you some photos.|写真を何枚か送るね。|A|sent-sent|4
+share|共有する、分け合う|Let's share our ideas in groups.|グループで考えを共有しよう。|A||6
+show|見せる、示す|Please show me your notebook.|ノートを見せてください。|A|showed-shown|6
+solve|解決する、解く|We solved the problem together.|私たちは一緒に問題を解決した。|B||2
+sound|～に聞こえる、～のようだ|That sounds interesting.|それはおもしろそうだね。|B||3
+stay|滞在する、とどまる|I stayed home because of the rain.|雨のため家にいた。|B||3
+stop|止める、やめる|Stop using plastic bags.|レジ袋を使うのをやめよう。|A||4
+take|取る、持っていく、（時間が）かかる|It takes ten minutes to walk to the station.|駅まで歩いて10分かかる。|A|took-taken|6
+teach|教える|Ms. Smith teaches us English.|スミス先生は私たちに英語を教えている。|A|taught-taught|6
+tell|伝える、言う|My mother told me to go to bed.|母は私に寝るように言った。|A|told-told|6
+throw|投げる|He threw the ball to me.|彼は私にボールを投げた。|B|threw-thrown|3
+travel|旅行する|I want to travel around the world.|世界中を旅行したい。|C||1
+try|試す、やってみる|I tried to speak only in English.|英語だけで話そうとした。|A||6
+understand|理解する|I understand how you feel.|あなたの気持ちはわかります。|A|understood-understood|6
+use|使う|You can use a dictionary.|辞書を使ってもいいです。|A||6
+visit|訪れる|Many tourists visit Yamanashi.|多くの観光客が山梨を訪れる。|A||4
+wait|待つ|Please wait here.|ここで待っていてください。|B||2
+wash|洗う|Wash your hands before lunch.|昼食の前に手を洗いなさい。|B||2
+waste|むだにする|Don't waste food.|食べ物をむだにしないで。|B||3
+wear|身につけている|Many people wear a raincoat on rainy days.|雨の日は多くの人がレインコートを着る。|B|wore-worn|2
+wish|（～であればいいのにと）願う|I wish I had more time.|もっと時間があればいいのに。|C||1
+work|働く、うまくいく|This plan will work well.|この計画はうまくいくだろう。|A||5
+worry|心配する|Don't worry about it.|それについては心配しないで。|B||3
+contact|連絡する|Please contact me by e-mail.|メールで私に連絡してください。|C||1
+count|数える|Let's count the bottles we collected.|集めたびんを数えよう。|C||1
+cry|泣く、叫ぶ|The baby started to cry.|赤ちゃんが泣き出した。|C||1
+hurt|傷つける、痛む|My leg hurts.|足が痛い。|C|hurt-hurt|1
+move|動かす、引っ越す|Could you help me move this desk?|この机を動かすのを手伝ってくれますか。|C||1
+present|発表する、贈る|We presented our ideas to the class.|私たちはクラスに考えを発表した。|B||2
+raise|上げる、育てる、（お金を）集める|They raised money for the children.|彼らは子どもたちのためにお金を集めた。|C||1
+reply|返事をする|Please reply to my e-mail.|私のメールに返事をください。|C||1
+spend|（時間・お金を）使う、過ごす|I spent the weekend with my family.|週末は家族と過ごした。|C|spent-spent|1
+support|支える、応援する|My family always supports me.|家族はいつも私を支えてくれる。|C||1
+turn|曲がる、回す|Turn right at the next corner.|次の角を右に曲がりなさい。|C||1
+win|勝つ、（賞を）とる|Our team won the tournament.|私たちのチームがトーナメントで優勝した。|B|won-won|2
 #名
-accident|事故|He was hurt in a car accident.|彼は自動車事故でけがをした。|B
-activity|活動|Club activities are fun.|部活動は楽しい。|B
-advice|助言|Thank you for your advice.|助言をありがとう。|B
-air|空気|The air is clean here.|ここは空気がきれいだ。|B
-area|地域|This area is famous for wine.|この地域はワインで有名だ。|C
-bottle|びん、ボトル|Bring your own water bottle.|自分の水筒を持ってきてね。|B
-century|世紀|This temple was built in the 16th century.|この寺は16世紀に建てられた。|B
-chance|機会|This is a good chance to speak English.|英語を話すよい機会だ。|B
-climate|気候|The climate is changing.|気候が変わってきている。|C
-community|地域社会|Let's clean our community.|地域をきれいにしよう。|C
-contest|コンテスト|She won the speech contest.|彼女はスピーチコンテストで優勝した。|B
-country|国、いなか|How many countries have you visited?|何か国訪れたことがありますか。|A
-culture|文化|I'm interested in Japanese culture.|日本の文化に興味がある。|B
-customer|（店の）客|The shop has many customers.|その店には客がたくさんいる。|C
-difference|違い|What's the difference between them?|それらの違いは何ですか。|B
-disaster|災害|We should prepare for disasters.|災害に備えるべきだ。|C
-dream|夢|My dream is to be a teacher.|私の夢は先生になることだ。|A
-earth|地球|We live on the earth.|私たちは地球に住んでいる。|B
-earthquake|地震|We had a big earthquake last night.|昨夜大きな地震があった。|B
-effort|努力|Your effort will be rewarded.|あなたの努力は報われるだろう。|C
-energy|エネルギー|Solar energy is clean.|太陽エネルギーはクリーンだ。|B
-environment|環境|We must protect the environment.|私たちは環境を守らなければならない。|B
-event|行事、出来事|The event was a big success.|その行事は大成功だった。|B
-example|例|Can you give me an example?|例を挙げてくれますか。|A
-experience|経験|It was a great experience.|それはすばらしい経験だった。|B
-fact|事実|In fact, he is my cousin.|実は彼は私のいとこです。|C
-farmer|農家の人|Farmers in Yamanashi grow many peaches.|山梨の農家はたくさんの桃を育てている。|B
-favor|親切な行為、頼みごと|Can I ask you a favor?|お願いがあるのですが。|C
-festival|祭り|The school festival is next week.|文化祭は来週です。|A
-field|畑、分野|My grandfather works in the field.|祖父は畑で働いている。|B
-floor|床、階|The library is on the third floor.|図書館は3階にある。|B
-forest|森|Many animals live in the forest.|森には多くの動物が住んでいる。|B
-future|将来、未来|What do you want to be in the future?|将来何になりたいですか。|A
-garbage|ごみ|Please take the garbage out.|ごみを出してください。|B
-goal|目標|My goal is to pass the exam.|私の目標は試験に合格することだ。|B
-government|政府|The government made a new law.|政府は新しい法律を作った。|C
-graph|グラフ|Look at the graph.|グラフを見てください。|B
-guest|（招かれた）客|We had some guests from Australia.|オーストラリアからのお客さんが来た。|B
-health|健康|Sleep is important for your health.|睡眠は健康にとって大切だ。|B
-heart|心臓、心|She has a kind heart.|彼女は優しい心の持ち主だ。|B
-history|歴史|I like Japanese history.|日本史が好きだ。|A
-holiday|休日|Tomorrow is a holiday.|明日は休日だ。|B
-idea|考え、アイデア|That's a good idea.|それはいい考えだ。|A
-information|情報|I got the information on the Internet.|インターネットでその情報を得た。|B
-island|島|Japan has many islands.|日本にはたくさんの島がある。|B
-kind|種類|What kind of music do you like?|どんな種類の音楽が好き？|A
-land|土地、陸|This land is good for growing grapes.|この土地はぶどう作りに向いている。|B
-language|言語|How many languages can you speak?|何か国語話せますか。|A
-leader|指導者、リーダー|She is a good leader.|彼女はよいリーダーだ。|B
-meal|食事|Let's enjoy the meal.|食事を楽しもう。|B
-medicine|薬|Take this medicine after meals.|この薬を食後に飲みなさい。|B
-member|一員、部員|He is a member of the art club.|彼は美術部の部員だ。|B
-memory|思い出、記憶|I have good memories of the trip.|その旅行にはよい思い出がある。|B
-message|伝言、メッセージ|Can I leave a message?|伝言をお願いできますか。|A
-mind|心、精神|She changed her mind.|彼女は気が変わった。|C
-mistake|間違い|Don't be afraid of making mistakes.|間違えることを恐れないで。|B
-moment|瞬間、ちょっとの間|Wait a moment, please.|少々お待ちください。|B
-nature|自然|We enjoyed nature in the mountains.|山で自然を楽しんだ。|B
-neighbor|隣人、近所の人|Our neighbors are very kind.|近所の人たちはとても親切だ。|B
-number|数|The number of students is small.|生徒の数は少ない。|B
-ocean|大洋、海|Plastic is a big problem in the ocean.|海ではプラスチックが大きな問題だ。|B
-opinion|意見|What's your opinion?|あなたの意見は？|B
-part|部分、役割|This is the most important part.|ここがいちばん大切な部分だ。|B
-peace|平和|We hope for world peace.|私たちは世界平和を願っている。|B
-percent|パーセント|Forty percent of the students walk to school.|生徒の40パーセントが歩いて通学している。|B
-plastic|プラスチック|Plastic bags are bad for the sea.|レジ袋は海に悪い。|B
-pollution|汚染|Air pollution is a big problem.|大気汚染は大きな問題だ。|C
-power|力、電力|The power went out.|停電した。|B
-presentation|発表|I gave a presentation in English class.|英語の授業で発表をした。|C
-price|値段|The price is too high.|値段が高すぎる。|B
-problem|問題|Let's think about this problem.|この問題について考えよう。|A
-reason|理由|Tell me the reason.|理由を教えて。|B
-report|報告（書）、レポート|I wrote a report about my town.|自分の町についてレポートを書いた。|B
-result|結果|I was happy with the result.|その結果に満足した。|B
-rule|規則|We have to follow the rules.|私たちは規則に従わなければならない。|A
-schedule|予定（表）|What's your schedule for tomorrow?|明日の予定は？|B
-scientist|科学者|She wants to be a scientist.|彼女は科学者になりたがっている。|B
-season|季節|Which season do you like the best?|どの季節がいちばん好き？|A
-secret|秘密|Can you keep a secret?|秘密を守れる？|B
-shrine|神社|We visited a shrine on New Year's Day.|元日に神社にお参りした。|B
-sign|標識、合図|The sign says "No Parking."|標識には「駐車禁止」と書いてある。|B
-skill|技能|Communication skills are important.|コミュニケーション能力は大切だ。|C
-society|社会|We live in an aging society.|私たちは高齢化社会に生きている。|C
-space|宇宙、空間|I want to go to space someday.|いつか宇宙に行きたい。|B
-speech|スピーチ、演説|I made a speech in English.|英語でスピーチをした。|B
-subject|教科、話題|What subject do you like?|何の教科が好き？|A
-success|成功|The festival was a great success.|その祭りは大成功だった。|C
-survey|（アンケート）調査|We did a survey in our class.|クラスでアンケート調査をした。|C
-technology|科学技術|Technology changes our lives.|科学技術は私たちの生活を変える。|C
-temperature|気温、温度|The temperature is high today.|今日は気温が高い。|C
-temple|寺|This temple is very old.|この寺はとても古い。|A
-tourist|観光客|Many tourists come to see Mt. Fuji.|多くの観光客が富士山を見に来る。|C
-tradition|伝統|This festival has a long tradition.|この祭りには長い伝統がある。|C
-uniform|制服|We wear school uniforms.|私たちは制服を着ている。|B
-vegetable|野菜|Eat more vegetables.|もっと野菜を食べなさい。|A
-village|村|He lives in a small village.|彼は小さな村に住んでいる。|B
-voice|声|She has a beautiful voice.|彼女は美しい声をしている。|B
-volunteer|ボランティア|I worked as a volunteer at the event.|その行事でボランティアとして働いた。|B
-war|戦争|Many people died in the war.|その戦争で多くの人が亡くなった。|B
-way|道、方法|This is the best way to learn English.|これが英語を学ぶいちばんよい方法だ。|A
+activity|活動|We joined a volunteer activity.|私たちはボランティア活動に参加した。|B||3
+advice|助言|Thank you for your advice.|助言をありがとう。|C||1
+amount|量|The amount of garbage is increasing.|ごみの量が増えている。|B||2
+area|地域|This area is famous for peaches.|この地域は桃で有名だ。|B||2
+audience|聴衆、観客|The audience enjoyed his speech.|聴衆は彼のスピーチを楽しんだ。|B||2
+chance|機会|This is a good chance to use English.|英語を使うよい機会だ。|C||1
+classmate|同級生|I talked with my classmates about the event.|行事について同級生と話した。|A||5
+clothes|衣服|I made a bag from old clothes.|古い服からかばんを作った。|C||1
+communication|意思の伝え合い、コミュニケーション|Communication is important in a team.|チームではコミュニケーションが大切だ。|C||1
+company|会社|My uncle works for a company in Kofu.|おじは甲府の会社で働いている。|B||2
+contest|コンテスト|She won the speech contest.|彼女はスピーチコンテストで優勝した。|B||2
+country|国、いなか|People in many countries use this app.|多くの国の人がこのアプリを使っている。|A||4
+culture|文化|I'm interested in Japanese culture.|日本の文化に興味がある。|B||2
+department|（デパートの）売り場、部門|Let's go to the department store.|デパートに行こう。|B||2
+dictionary|辞書|Look up the word in your dictionary.|辞書でその単語を調べなさい。|B||2
+dream|夢|My dream is to be a teacher.|私の夢は先生になることだ。|B||2
+effort|努力|Your effort will help many people.|あなたの努力は多くの人の役に立つだろう。|C||1
+end|終わり|Please wait until the end.|最後まで待ってください。|A||4
+energy|エネルギー|We should save energy.|エネルギーを節約するべきだ。|C||1
+environment|環境|We must think about the environment.|私たちは環境について考えなければならない。|A||4
+event|行事、出来事|The event was held in the park.|その行事は公園で開かれた。|A||5
+example|例|Can you give me an example?|例を挙げてくれますか。|A||6
+experience|経験|It was a great experience for me.|それは私にとってすばらしい経験だった。|A||5
+festival|祭り|The school festival is next week.|文化祭は来週だ。|B||3
+future|将来、未来|What do you want to do in the future?|将来何をしたいですか。|B||3
+garbage|ごみ|Please take the garbage out.|ごみを出してください。|B||2
+gesture|身ぶり、ジェスチャー|Gestures help communication.|ジェスチャーは意思の伝え合いに役立つ。|B||2
+group|集団、グループ|Let's make groups of four.|4人のグループを作ろう。|A||4
+half|半分|Half of the students walk to school.|生徒の半分は歩いて通学している。|B||2
+history|歴史|This town has a long history.|この町には長い歴史がある。|B||3
+homework|宿題|I have a lot of homework today.|今日は宿題がたくさんある。|A||4
+hometown|ふるさと、地元|I love my hometown.|私は自分のふるさとが大好きだ。|B||2
+idea|考え、アイデア|That's a good idea.|それはいい考えだ。|A||6
+image|イメージ、画像|What image do you have of Japan?|日本にどんなイメージがありますか。|B||2
+information|情報|You can get information on the Internet.|インターネットで情報を得られる。|A||6
+Internet|インターネット|I often use the Internet to study.|勉強にインターネットをよく使う。|A||6
+invention|発明（品）|The smartphone is a great invention.|スマートフォンはすばらしい発明品だ。|C||1
+item|品物、項目|Choose two items from the list.|リストから品物を二つ選びなさい。|C||1
+job|仕事|What job do you want in the future?|将来どんな仕事につきたいですか。|B||3
+kind|種類|There are many kinds of fish in this river.|この川には多くの種類の魚がいる。|A||6
+language|言語|English is used as a common language.|英語は共通の言語として使われている。|A||4
+lesson|授業、教訓|We had an English lesson online.|私たちはオンラインで英語の授業を受けた。|B||2
+life|生活、生命、人生|Smartphones made our life easier.|スマートフォンは私たちの生活を楽にした。|B||2
+member|一員、部員|He is a member of the student council.|彼は生徒会の一員だ。|B||3
+memory|思い出、記憶|I have a lot of good memories of this school.|この学校にはよい思い出がたくさんある。|B||2
+message|伝言、メッセージ|Can I leave a message?|伝言をお願いできますか。|B||2
+minute|分|The speech should be three minutes long.|スピーチは3分間にしてください。|A||4
+mountain|山|We can see beautiful mountains from here.|ここから美しい山々が見える。|A||4
+museum|博物館、美術館|Let's go to the museum this weekend.|今週末、博物館に行こう。|B||2
+nature|自然|We enjoyed nature in the forest.|私たちは森で自然を楽しんだ。|B||2
+number|数|The number of tourists is increasing.|観光客の数が増えている。|B||3
+opinion|意見|What's your opinion about this?|これについてあなたの意見は？|B||2
+order|順番、注文|Put the pictures in the right order.|絵を正しい順番に並べなさい。|A||6
+paragraph|段落|Read the second paragraph.|2番目の段落を読みなさい。|B||3
+part|部分、役割|This is the most important part.|ここがいちばん大切な部分だ。|B||3
+person|人|She is a very kind person.|彼女はとても親切な人だ。|B||3
+photo|写真|Can I take a photo here?|ここで写真を撮ってもいいですか。|B||3
+place|場所|This is my favorite place.|ここは私のお気に入りの場所だ。|A||5
+plastic|プラスチック|Plastic bags are bad for the sea.|レジ袋は海に悪い。|B||2
+point|要点、点|That's a good point.|それはいい点ですね。|B||3
+presentation|発表|We gave a presentation about food waste.|私たちは食品ロスについて発表した。|B||3
+price|値段|The price of this bag is low.|このかばんの値段は安い。|C||1
+prize|賞|He won first prize in the contest.|彼はコンテストで1等賞をとった。|B||2
+problem|問題|Food waste is a big problem.|食品ロスは大きな問題だ。|A||4
+program|番組、計画|I watched a TV program about Japan.|日本についてのテレビ番組を見た。|C||1
+project|事業、計画、課題|Our class started a new project.|私たちのクラスは新しい取り組みを始めた。|B||2
+research|研究、調査|He did research on old paintings.|彼は古い絵画について研究した。|C||1
+restaurant|レストラン|This restaurant uses local vegetables.|このレストランは地元の野菜を使っている。|B||2
+result|結果|Look at the result of the survey.|調査の結果を見てください。|B||2
+rule|規則|We have to follow the rules.|私たちは規則に従わなければならない。|A||4
+scientist|科学者|She wants to be a scientist.|彼女は科学者になりたがっている。|C||1
+season|季節|Which season do you like the best?|どの季節がいちばん好き？|B||2
+sentence|文|Write two sentences about your plan.|あなたの計画について2文で書きなさい。|A||4
+society|社会|Technology is changing our society.|科学技術は私たちの社会を変えている。|B||2
+speech|スピーチ、演説|I made a speech in English.|英語でスピーチをした。|B||3
+stadium|競技場、スタジアム|The concert will be held at the stadium.|コンサートはスタジアムで開かれる。|B||3
+store|店|I bought it at a convenience store.|それはコンビニで買った。|B||3
+summary|要約|Write a summary of the story.|話の要約を書きなさい。|B||2
+symbol|象徴、記号|Mt. Fuji is a symbol of Japan.|富士山は日本の象徴だ。|B||2
+technology|科学技術|Technology makes our life convenient.|科学技術は私たちの生活を便利にする。|C||1
+text|本文、文章|Read the text and answer the questions.|本文を読んで質問に答えなさい。|A||5
+textbook|教科書|Open your textbook to page ten.|教科書の10ページを開きなさい。|B||2
+thousand|1000（の）|Thousands of people came to the festival.|何千人もの人がその祭りに来た。|B||3
+topic|話題、テーマ|What is the topic of your speech?|あなたのスピーチの話題は何ですか。|B||3
+tourist|観光客|Many tourists come to see Mt. Fuji.|多くの観光客が富士山を見に来る。|B||2
+trash|ごみ|Don't leave your trash in the park.|公園にごみを置いていかないで。|C||1
+umbrella|かさ|Don't forget your umbrella.|かさを忘れないで。|B||3
+vacation|休暇|What did you do during summer vacation?|夏休みの間に何をしましたか。|B||3
+vegetable|野菜|My grandmother grows vegetables.|祖母は野菜を育てている。|B||2
+volunteer|ボランティア|I worked as a volunteer at the event.|その行事でボランティアとして働いた。|B||2
+way|道、方法|This is a good way to learn English.|これは英語を学ぶよい方法だ。|A||5
+website|ウェブサイト|You can find more information on our website.|詳しい情報は私たちのウェブサイトで見られます。|B||3
+weekend|週末|What will you do this weekend?|今週末は何をするの？|B||3
+world|世界|People all over the world love this game.|世界中の人々がこのゲームを好きだ。|A||5
+advertisement|広告|I saw an advertisement for the event.|その行事の広告を見た。|C||1
+character|登場人物、キャラクター、性格|This character is popular with children.|このキャラクターは子どもに人気がある。|C||1
+comment|意見、コメント|Thank you for your comment.|コメントをありがとう。|C||1
+custom|習慣、慣習|Each country has its own customs.|それぞれの国に独自の習慣がある。|C||1
+earth|地球|We live on the earth.|私たちは地球に住んでいる。|C||1
+feeling|気持ち、感情|It's hard to express my feelings in English.|英語で気持ちを表すのは難しい。|C||1
+field|畑、分野|My grandfather works in the field.|祖父は畑で働いている。|C||1
+guide|案内人、ガイド|The guide showed us around the castle.|ガイドが城を案内してくれた。|C||1
+human|人間|Humans need clean water.|人間にはきれいな水が必要だ。|C||1
+machine|機械|This machine can wash dishes.|この機械は皿を洗える。|C||1
+magazine|雑誌|I read about it in a magazine.|それについて雑誌で読んだ。|C||1
+material|材料、素材|This bag is made from old materials.|このかばんは古い素材から作られている。|C||1
+matter|問題、事がら|What's the matter?|どうしたの？|C||1
+million|100万（の）|Millions of people use this app.|何百万人もの人がこのアプリを使っている。|C||1
+neighbor|隣人、近所の人|Our neighbors are very kind.|近所の人たちはとても親切だ。|C||1
+newspaper|新聞|I read the newspaper every morning.|私は毎朝新聞を読む。|C||1
+performance|演技、演奏、公演|Their performance was great.|彼らの演奏はすばらしかった。|C||1
+pollution|汚染|Air pollution is a big problem.|大気汚染は大きな問題だ。|C||1
+power|力、電力|We use a lot of power every day.|私たちは毎日たくさんの電力を使う。|C||1
+shape|形|This cookie has the shape of a star.|このクッキーは星の形をしている。|C||1
+sign|標識、合図|The sign says "No Parking."|標識には「駐車禁止」と書いてある。|C||1
+smartphone|スマートフォン|Many students have their own smartphones.|多くの生徒が自分のスマートフォンを持っている。|A||4
+tournament|トーナメント、選手権|We won the tennis tournament.|私たちはテニスのトーナメントで優勝した。|C||1
+translation|翻訳|I checked the translation with a dictionary.|辞書で翻訳を確かめた。|C||1
+trip|旅行|How was your school trip?|修学旅行はどうだった？|C||1
+trouble|困難、困りごと|If you are in trouble, ask me.|困ったときは私に聞いてね。|C||1
+university|大学|My sister goes to a university in Tokyo.|姉は東京の大学に通っている。|C||1
 #形
-able|～できる（be able to）|I was able to swim fast.|私は速く泳ぐことができた。|B
-afraid|恐れて、心配して|Don't be afraid.|こわがらないで。|B
-another|もう一つの、別の|Can I have another cup of tea?|お茶をもう一杯いただけますか。|B
-brave|勇敢な|The brave boy saved the dog.|勇敢な少年がその犬を助けた。|C
-careful|注意深い|Be careful on the road.|道路では気をつけて。|B
-cheap|安い|This T-shirt was cheap.|このTシャツは安かった。|B
-comfortable|快適な|This chair is comfortable.|このいすは座り心地がいい。|C
-convenient|便利な|This app is very convenient.|このアプリはとても便利だ。|C
-dangerous|危険な|It's dangerous to swim in this river.|この川で泳ぐのは危険だ。|B
-different|違った、さまざまな|My idea is different from yours.|私の考えはあなたのとは違う。|A
-each|それぞれの|Each student has a tablet.|生徒はそれぞれタブレットを持っている。|B
-elderly|年配の|I helped an elderly woman.|私は年配の女性を手伝った。|C
-empty|からの|The bottle is empty.|そのびんはからだ。|C
-enough|十分な|We have enough time.|時間は十分にある。|B
-excited|わくわくした|I'm excited about the trip.|旅行にわくわくしている。|B
-exciting|わくわくさせる|The game was exciting.|その試合はわくわくした。|B
-expensive|高価な|This watch is too expensive.|この時計は高すぎる。|B
-famous|有名な|Yamanashi is famous for grapes.|山梨はぶどうで有名だ。|A
-favorite|大好きな、お気に入りの|What's your favorite food?|好きな食べ物は何？|A
-few|少しの、ほとんどない（数）|Few people knew the news.|その知らせを知っている人はほとんどいなかった。|B
-foreign|外国の|I want to learn a foreign language.|外国語を学びたい。|B
-free|自由な、暇な、無料の|Are you free this afternoon?|今日の午後は暇？|B
-friendly|親しみやすい|The people here are friendly.|ここの人たちは親しみやすい。|B
-full|いっぱいの、満腹の|The bus was full.|バスは満員だった。|B
-glad|うれしい|I'm glad to hear that.|それを聞いてうれしい。|B
-healthy|健康的な、健康な|Eat healthy food.|体によい食べ物を食べなさい。|B
-heavy|重い、激しい|We had heavy rain yesterday.|昨日は大雨だった。|B
-honest|正直な|He is an honest boy.|彼は正直な少年だ。|C
-impossible|不可能な|Nothing is impossible.|不可能なことはない。|C
-international|国際的な|We had an international exchange event.|国際交流のイベントがあった。|C
-little|少しの、ほとんどない（量）|There is little water in the glass.|コップには水がほとんどない。|B
-local|地元の、地域の|We enjoyed local food.|私たちは地元の料理を楽しんだ。|C
-lonely|さびしい|I felt lonely after he left.|彼が去ったあとさびしかった。|C
-main|主な|What is the main reason?|主な理由は何ですか。|C
-modern|現代的な|This is a modern building.|これは現代的な建物だ。|C
-natural|自然の|This park is rich in natural beauty.|この公園は自然の美しさに富んでいる。|C
-necessary|必要な|Water is necessary for life.|水は生命に必要だ。|C
-nervous|緊張して|I was nervous before the speech.|スピーチの前は緊張した。|C
-own|自分自身の|I want my own room.|自分の部屋がほしい。|B
-popular|人気のある|This song is popular among young people.|この歌は若者に人気がある。|A
-possible|可能な|Is it possible to finish by noon?|正午までに終えることは可能ですか。|C
-proud|誇りに思って|I'm proud of my team.|私は自分のチームを誇りに思う。|C
-public|公共の|Use public transportation.|公共交通機関を使いなさい。|C
-quiet|静かな|Please be quiet.|静かにしてください。|A
-ready|準備ができて|Are you ready?|準備はできた？|B
-real|本当の、現実の|Is this a real diamond?|これは本物のダイヤですか。|B
-safe|安全な|This water is safe to drink.|この水は飲んでも安全だ。|B
-same|同じ|We are in the same class.|私たちは同じクラスだ。|B
-serious|深刻な、まじめな|This is a serious problem.|これは深刻な問題だ。|C
-several|いくつかの|I have been there several times.|私はそこに何度か行ったことがある。|C
-shy|恥ずかしがりの|She was shy at first.|彼女は最初は恥ずかしがっていた。|C
-sick|病気の|He is sick in bed.|彼は病気で寝ている。|B
-similar|似ている|My bag is similar to yours.|私のかばんはあなたのに似ている。|C
-special|特別な|Today is a special day.|今日は特別な日だ。|B
-strange|奇妙な、見知らぬ|I heard a strange noise.|奇妙な音が聞こえた。|B
-sure|確信して|Are you sure?|本当に？|B
-surprised|驚いた|I was surprised at the news.|その知らせに驚いた。|B
-terrible|ひどい|The weather was terrible.|天気はひどかった。|C
-tired|疲れた|I'm tired after practice.|練習の後で疲れている。|A
-traditional|伝統的な|Kimono is traditional Japanese clothing.|着物は日本の伝統的な衣服だ。|C
-true|本当の|Is the story true?|その話は本当ですか。|B
-useful|役に立つ|This dictionary is very useful.|この辞書はとても役に立つ。|B
-whole|全体の|I ate the whole cake.|ケーキを丸ごと食べた。|C
-wonderful|すばらしい|We had a wonderful time.|私たちはすばらしい時間を過ごした。|A
-wrong|間違った、具合が悪い|What's wrong?|どうしたの？|B
+another|もう一つの、別の|Can I have another piece of cake?|ケーキをもう一切れもらえますか。|A||4
+beautiful|美しい|The view from the mountain was beautiful.|山からのながめは美しかった。|A||4
+careful|注意深い|Be careful when you cross the street.|通りを渡るときは気をつけて。|B||2
+common|共通の、よくある|English is a common language in the world.|英語は世界の共通語だ。|C||1
+convenient|便利な|Smartphones are very convenient.|スマートフォンはとても便利だ。|C||1
+creative|創造的な|Her idea was very creative.|彼女の考えはとても独創的だった。|B||2
+dangerous|危険な|It's dangerous to use a smartphone while walking.|歩きながらスマートフォンを使うのは危険だ。|B||2
+different|違った、さまざまな|Life in Japan is different from life in Canada.|日本の生活はカナダの生活と違う。|A||5
+difficult|難しい|This question is difficult.|この問題は難しい。|A||4
+each|それぞれの|Each student has a tablet.|生徒はそれぞれタブレットを持っている。|A||6
+enough|十分な|We don't have enough time.|時間が十分にない。|B||3
+expensive|高価な|This bag is too expensive.|このかばんは高すぎる。|B||2
+famous|有名な|Yamanashi is famous for its fruit.|山梨は果物で有名だ。|A||5
+favorite|大好きな、お気に入りの|What's your favorite subject?|好きな教科は何？|A||6
+few|少しの、ほとんどない（数）|Few people knew about the event.|その行事について知っている人はほとんどいなかった。|B||2
+foreign|外国の|I want to learn about foreign cultures.|外国の文化について学びたい。|B||3
+free|自由な、暇な、無料の|The museum is free for students.|その博物館は学生は無料だ。|B||2
+fun|楽しいこと、楽しい|Learning English is fun.|英語を学ぶのは楽しい。|A||6
+hard|難しい、一生懸命に|I studied hard for the test.|テストのために一生懸命勉強した。|A||4
+healthy|健康的な、健康な|Eat healthy food.|体によい食べ物を食べなさい。|C||1
+heavy|重い、激しい|This box is too heavy.|この箱は重すぎる。|C||1
+helpful|役に立つ、助けになる|Your advice was very helpful.|あなたの助言はとても役に立った。|A||4
+hungry|空腹の|I'm hungry. Let's eat lunch.|おなかがすいた。お昼を食べよう。|B||3
+important|大切な|It is important to listen to others.|ほかの人の話を聞くことは大切だ。|A||4
+interested|興味を持った|I'm interested in science.|私は科学に興味がある。|A||5
+large|大きい、広い|A large amount of food is wasted.|大量の食べ物がむだにされている。|C||1
+last|最後の、この前の|This is the last question.|これが最後の質問です。|A||4
+local|地元の、地域の|We should buy local vegetables.|地元の野菜を買うべきだ。|A||4
+other|ほかの|Do you have any other ideas?|ほかに何か考えはありますか。|A||5
+own|自分自身の|Bring your own bag when you go shopping.|買い物に行くときは自分の袋を持っていこう。|B||3
+popular|人気のある|This song is popular among young people.|この歌は若者に人気がある。|B||2
+proud|誇りに思って|I'm proud of my town.|私は自分の町を誇りに思う。|C||1
+rainy|雨の|It was rainy yesterday.|昨日は雨だった。|B||2
+safe|安全な|This water is safe to drink.|この水は飲んでも安全だ。|B||2
+same|同じ|We are in the same class.|私たちは同じクラスだ。|A||4
+second|2番目の|Look at the second picture.|2番目の絵を見てください。|B||3
+serious|深刻な、まじめな|Air pollution is a serious problem.|大気汚染は深刻な問題だ。|B||2
+similar|似ている|My idea is similar to yours.|私の考えはあなたのに似ている。|C||1
+special|特別な|Today is a special day for me.|今日は私にとって特別な日だ。|A||4
+strong|強い|We need a strong team.|私たちには強いチームが必要だ。|B||2
+sure|確信して|I'm sure you can do it.|あなたならきっとできるよ。|A||5
+surprised|驚いた|I was surprised at the news.|その知らせに驚いた。|A||4
+traditional|伝統的な|We tried traditional Japanese food.|私たちは伝統的な日本料理を食べてみた。|C||1
+true|本当の|Is the story true?|その話は本当ですか。|B||2
+unique|独特の、ほかにない|Japanese schools have some unique things.|日本の学校にはいくつか独特なところがある。|B||3
+useful|役に立つ|This website is useful for studying.|このウェブサイトは勉強に役立つ。|B||3
+various|さまざまな|People from various countries came.|さまざまな国から人々が来た。|B||3
+wonderful|すばらしい|We had a wonderful time.|私たちはすばらしい時間を過ごした。|B||3
+angry|怒った|Why is he so angry?|彼はなぜそんなに怒っているの？|C||1
+delicious|とてもおいしい|The grapes were delicious.|そのぶどうはとてもおいしかった。|C||1
+early|早い、早く|I got up early this morning.|今朝は早く起きた。|B||2
+effective|効果的な|This is an effective way to learn words.|これは単語を覚える効果的な方法だ。|C||1
+excited|わくわくした|I'm excited about the school trip.|修学旅行にわくわくしている。|C||1
+friendly|親しみやすい|The people in this town are friendly.|この町の人たちは親しみやすい。|C||1
+funny|おかしい、おもしろい|His story was very funny.|彼の話はとてもおかしかった。|C||1
+lucky|幸運な|You are lucky to have such a good friend.|そんなよい友達がいてあなたは幸運だ。|C||1
+main|主な|What is the main idea of this paragraph?|この段落の主な考えは何ですか。|C||1
+national|国の、国立の|We visited a national park.|私たちは国立公園を訪れた。|C||1
+quiet|静かな|Please be quiet in the library.|図書館では静かにしてください。|C||1
+right|正しい、右の|You are right.|あなたの言うとおりです。|A||6
+sick|病気の|He is sick in bed.|彼は病気で寝ている。|C||1
+social|社会の|Social media is used by many people.|ソーシャルメディアは多くの人に使われている。|C||1
+sunny|晴れた|It will be sunny tomorrow.|明日は晴れるだろう。|C||1
+wild|野生の|Many wild animals live in the forest.|森には多くの野生動物が住んでいる。|C||1
 #副
-abroad|外国へ（で）|I want to study abroad.|留学したい。|B
-actually|実は、実際に|Actually, I've never been there.|実はそこへ行ったことがないんだ。|C
-ago|～前に|I met him two years ago.|2年前に彼に会った。|A
-almost|ほとんど|I almost forgot.|もう少しで忘れるところだった。|B
-already|すでに、もう|I have already finished it.|もうそれを終えてしまった。|B
-away|離れて、去って|The station is far away.|駅は遠く離れている。|B
-carefully|注意深く|Listen carefully.|注意して聞きなさい。|B
-easily|簡単に|He solved the problem easily.|彼はその問題を簡単に解いた。|B
-especially|特に|I like fruit, especially peaches.|果物、特に桃が好きだ。|C
-even|～でさえ|Even children can do it.|子どもでさえそれができる。|C
-ever|今までに|Have you ever been to Kyoto?|京都に行ったことがありますか。|B
-finally|ついに、最後に|Finally, we reached the top.|ついに頂上に着いた。|B
-however|しかしながら|However, it was not easy.|しかし、それは簡単ではなかった。|C
-instead|その代わりに|I didn't go out. I stayed home instead.|外出しないで、代わりに家にいた。|C
-later|後で|See you later.|また後でね。|B
-maybe|たぶん、もしかすると|Maybe you're right.|たぶんあなたが正しい。|A
-never|一度も～ない|I have never seen a koala.|私はコアラを一度も見たことがない。|B
-once|一度、かつて|I have been there once.|そこへは一度行ったことがある。|B
-probably|おそらく|It will probably rain tomorrow.|明日はおそらく雨だろう。|C
-quickly|すばやく|He ran quickly.|彼はすばやく走った。|B
-someday|（未来の）いつか|I want to visit Canada someday.|いつかカナダを訪れたい。|B
-still|まだ、今でも|He is still sleeping.|彼はまだ寝ている。|B
-suddenly|突然|Suddenly, it began to rain.|突然雨が降り始めた。|C
-together|一緒に|Let's go together.|一緒に行こう。|A
-twice|二度、2倍|I have read the book twice.|その本は2回読んだことがある。|B
-usually|ふだんは|I usually get up at six.|ふだんは6時に起きる。|A
-yet|（疑問文で）もう、（否定文で）まだ|Have you finished your homework yet?|もう宿題を終えた？|B
+abroad|外国へ（で）|I want to study abroad.|留学したい。|C||1
+actually|実は、実際に|Actually, I've never been there.|実はそこへ行ったことがないんだ。|A||5
+ago|～前に|I met him two years ago.|2年前に彼に会った。|B||2
+already|すでに、もう|I have already finished it.|もうそれを終えてしまった。|C||1
+around|～のまわりに、あちこち|We walked around the town.|私たちは町を歩いて回った。|A||4
+away|離れて、去って|The station is far away.|駅は遠く離れている。|B||3
+easily|簡単に|You can find it easily.|それは簡単に見つけられる。|B||2
+especially|特に|I like fruit, especially peaches.|果物、特に桃が好きだ。|C||1
+even|～でさえ|Even children can use this app.|子どもでさえこのアプリを使える。|A||4
+ever|今までに|Have you ever been to Kyoto?|京都に行ったことがありますか。|C||1
+finally|ついに、最後に|Finally, we finished the project.|ついに私たちはその取り組みを終えた。|B||2
+however|しかしながら|However, it was not easy.|しかし、それは簡単ではなかった。|A||6
+instead|その代わりに|I didn't take the bus. I walked instead.|バスに乗らずに、代わりに歩いた。|C||1
+just|ちょうど、ただ～だけ|I have just arrived.|ちょうど着いたところだ。|A||5
+later|後で|I'll call you later.|後で電話するね。|B||2
+never|一度も～ない|I have never seen snow.|私は一度も雪を見たことがない。|B||3
+often|しばしば、よく|I often go to the library.|私はよく図書館に行く。|A||4
+quickly|すばやく|Please answer quickly.|すばやく答えてください。|B||2
+soon|すぐに|The bus will come soon.|バスはすぐに来るよ。|B||3
+still|まだ、今でも|He is still in the library.|彼はまだ図書館にいる。|A||5
+suddenly|突然|Suddenly, it began to rain.|突然雨が降り始めた。|B||2
+together|一緒に|Let's study together.|一緒に勉強しよう。|A||5
+usually|ふだんは|I usually walk to school.|私はふだん歩いて通学している。|A||5
+yet|（疑問文で）もう、（否定文で）まだ|Have you finished your homework yet?|もう宿題を終えた？|B||3
+slowly|ゆっくりと|Could you speak more slowly?|もっとゆっくり話していただけますか。|B||2
 #前
-across|～を横切って|We walked across the bridge.|私たちは橋を歩いて渡った。|B
-against|～に反対して、～に対抗して|Are you for or against the plan?|その計画に賛成ですか、反対ですか。|C
-along|～に沿って|We walked along the river.|私たちは川に沿って歩いた。|B
-although|～だけれども|Although it was raining, we played soccer.|雨が降っていたけれど、サッカーをした。|C
-among|（3つ以上）の間で|This song is popular among students.|この歌は生徒の間で人気がある。|C
-as|～として、～のように|I worked as a guide.|私はガイドとして働いた。|B
-behind|～の後ろに|The cat is behind the door.|ねこはドアの後ろにいる。|B
-between|（2つ）の間に|Sit between Ken and me.|健と私の間に座って。|B
-during|～の間に|I visited my aunt during the summer vacation.|夏休みの間におばを訪ねた。|B
-since|～以来、～なので|I have lived here since 2015.|2015年からここに住んでいる。|B
-than|～よりも|He is taller than me.|彼は私より背が高い。|B
-through|～を通って|The train went through the tunnel.|電車はトンネルを通り抜けた。|B
-until|～まで（ずっと）|Wait here until I come back.|私が戻るまでここで待っていて。|B
-while|～している間に|While I was reading, my mother came home.|読書をしている間に母が帰ってきた。|C
-without|～なしで|I can't live without music.|私は音楽なしでは生きていけない。|B
+across|～を横切って|We walked across the bridge.|私たちは橋を歩いて渡った。|C||1
+against|～に反対して|Many people were against the plan.|多くの人がその計画に反対だった。|C||1
+among|（3つ以上）の間で|This game is popular among students.|このゲームは生徒の間で人気がある。|C||1
+between|（2つ）の間に|The park is between the school and the station.|公園は学校と駅の間にある。|C||1
+during|～の間に|I visited my aunt during the vacation.|休暇の間におばを訪ねた。|A||4
+near|～の近くに|There is a park near my house.|家の近くに公園がある。|B||3
+over|～を越えて、～以上|Over 100 people joined the event.|100人以上がその行事に参加した。|B||3
+since|～以来、～なので|I have lived here since 2015.|2015年からここに住んでいる。|B||3
+than|～よりも|This bag is lighter than that one.|このかばんはあれより軽い。|A||6
+though|～だけれども|Though it was raining, we went out.|雨が降っていたけれど、私たちは出かけた。|B||2
+through|～を通って、～を通じて|We can learn a lot through volunteer work.|ボランティア活動を通じて多くを学べる。|B||3
+while|～している間に|While I was walking, I saw a deer.|歩いている間にシカを見た。|B||2
+without|～なしで|I can't live without my smartphone.|私はスマートフォンなしでは生きていけない。|A||5
 #熟
-a few|少しの、2、3の（数）|I have a few friends in Kofu.|甲府に何人か友達がいる。|B
-a little|少しの（量）、少し|I can speak a little English.|英語を少し話せる。|B
-a piece of|1枚の、1切れの|I need a piece of paper.|紙が1枚必要だ。|C
-agree with|～に賛成する|I agree with you.|あなたに賛成です。|B
-all over the world|世界中で|This game is played all over the world.|このゲームは世界中で遊ばれている。|B
-as soon as|～するとすぐに|Call me as soon as you get home.|家に着いたらすぐに電話して。|C
-as ~ as possible|できるだけ～|Come as soon as possible.|できるだけ早く来て。|C
-at first|最初は|At first, I couldn't understand him.|最初は彼の言うことがわからなかった。|B
-at last|ついに|At last, the day came.|ついにその日が来た。|B
-at once|すぐに|Come here at once.|すぐにここへ来なさい。|C
-be able to|～することができる|You will be able to swim soon.|すぐに泳げるようになるよ。|B
-be afraid of|～をこわがる|She is afraid of dogs.|彼女は犬をこわがる。|B
-be different from|～と違う|Life in Japan is different from life in America.|日本の生活はアメリカの生活と違う。|B
-be famous for|～で有名だ|Yamanashi is famous for its fruit.|山梨は果物で有名だ。|B
-be full of|～でいっぱいだ|The park was full of people.|公園は人でいっぱいだった。|B
-be good at|～が得意だ|He is good at playing the guitar.|彼はギターを弾くのが得意だ。|A
-be interested in|～に興味がある|I'm interested in science.|私は科学に興味がある。|A
-be proud of|～を誇りに思う|I'm proud of my town.|私は自分の町を誇りに思う。|C
-be ready for|～の準備ができている|Are you ready for the test?|テストの準備はできた？|B
-because of|～のために（原因）|The game was stopped because of the rain.|雨のために試合が中止された。|B
-both A and B|AもBも両方|Both Ken and Yumi like music.|健も由美も音楽が好きだ。|B
-each other|お互い|We help each other.|私たちはお互いに助け合う。|B
-either A or B|AかBのどちらか|You can choose either tea or coffee.|紅茶かコーヒーのどちらかを選べます。|C
-enough to|～するのに十分な|He is old enough to drive.|彼は運転できる年齢だ。|C
-find out|見つけ出す、わかる|I found out the truth.|私は真実を知った。|C
-first of all|まず第一に|First of all, let me thank you.|まず初めにお礼を言わせてください。|B
-for example|例えば|I like sports, for example, tennis.|スポーツが好きです。例えばテニスです。|A
-for the first time|初めて|I saw snow for the first time.|初めて雪を見た。|B
-get to|～に着く|How can I get to the station?|駅へはどうやって行けばいいですか。|B
-give up|あきらめる|Don't give up.|あきらめないで。|B
-grow up|成長する、大人になる|I grew up in Kofu.|私は甲府で育った。|B
-had better|～したほうがよい|You had better go to bed early.|早く寝たほうがいい。|C
-hear from|～から便りがある|I'm happy to hear from you.|あなたから便りがあってうれしい。|C
-help ~ with ...|～の…を手伝う|Can you help me with my homework?|宿題を手伝ってくれる？|B
-How about ~?|～はどうですか|How about going shopping?|買い物に行くのはどう？|A
-I'm afraid ~|残念ながら～|I'm afraid I can't come.|残念ながら行けません。|C
-in fact|実は、実際は|In fact, I don't like it.|実はそれが好きではない。|C
-in front of|～の前に|Let's meet in front of the station.|駅の前で会おう。|A
-instead of|～の代わりに|Let's walk instead of taking a bus.|バスに乗る代わりに歩こう。|C
-look after|～の世話をする|I look after my little brother.|私は弟の世話をしている。|C
-look for|～を探す|I'm looking for my key.|かぎを探している。|A
-look forward to|～を楽しみに待つ|I'm looking forward to seeing you.|あなたに会えるのを楽しみにしています。|B
-make friends with|～と友達になる|I made friends with Tom.|トムと友達になった。|B
-more and more|ますます多くの|More and more people use smartphones.|ますます多くの人がスマホを使っている。|C
-not only A but also B|AだけでなくBも|She speaks not only English but also French.|彼女は英語だけでなくフランス語も話す。|C
-on my way to|～へ行く途中で|I met Ken on my way to school.|学校へ行く途中で健に会った。|C
-on the other hand|一方で|On the other hand, cars cause pollution.|一方で、車は汚染を引き起こす。|C
-one day|ある日|One day, he got a letter.|ある日、彼は手紙を受け取った。|B
-put on|着る、身につける|Put on your coat.|コートを着なさい。|B
-Shall I ~?|（私が）～しましょうか|Shall I open the window?|窓を開けましょうか。|B
-show ~ around|～を案内する|I'll show you around Kofu.|甲府を案内するね。|C
-so ~ that ...|とても～なので…|I was so tired that I went to bed early.|とても疲れていたので早く寝た。|C
-some ~, others ...|～もいれば、…もいる|Some people like summer, others like winter.|夏が好きな人もいれば、冬が好きな人もいる。|C
-take care of|～の世話をする|Please take care of my dog.|私の犬の世話をしてください。|B
-take part in|～に参加する|I took part in the volunteer activity.|ボランティア活動に参加した。|C
-thanks to|～のおかげで|Thanks to you, I passed the exam.|あなたのおかげで試験に合格した。|C
-That's too bad.|それはお気の毒に。|That's too bad. I hope you get well soon.|それはお気の毒に。早く良くなるといいね。|B
-these days|最近|These days, I often read books.|最近よく本を読む。|B
-think of|～のことを考える、思いつく|What do you think of this idea?|この考えをどう思う？|B
-throw away|捨てる|Don't throw away plastic bottles here.|ここにペットボトルを捨てないで。|B
-too ~ to ...|～すぎて…できない|This box is too heavy to carry.|この箱は重すぎて運べない。|C
-try on|試着する|May I try on this shirt?|このシャツを試着してもいいですか。|C
-turn off|（電気などを）消す|Turn off the lights.|電気を消して。|B
-used to|以前は～だった、よく～したものだ|There used to be a big tree here.|以前ここに大きな木があった。|C
-wait for|～を待つ|I'm waiting for the bus.|バスを待っている。|A
-Why don't you ~?|～してはどうですか|Why don't you ask your teacher?|先生に聞いてみたらどう？|B
-Would you like ~?|～はいかがですか|Would you like some tea?|お茶はいかがですか。|B
+a few|少しの、2、3の（数）|I have a few questions.|いくつか質問があります。|B||2
+a lot of|たくさんの|A lot of food is wasted every day.|毎日たくさんの食べ物がむだにされている。|A||6
+after school|放課後|Let's play tennis after school.|放課後テニスをしよう。|B||3
+all over the world|世界中で|This anime is popular all over the world.|このアニメは世界中で人気がある。|B||2
+at first|最初は|At first, I couldn't understand him.|最初は彼の言うことがわからなかった。|A||4
+at home|家で|I study at home every night.|私は毎晩家で勉強する。|B||3
+be born|生まれる|I was born in Kofu.|私は甲府で生まれた。|B||3
+be famous for|～で有名だ|Yamanashi is famous for its fruit.|山梨は果物で有名だ。|C||0
+be going to|～するつもりだ|I'm going to visit my grandmother.|祖母を訪ねるつもりだ。|A||5
+be good at|～が得意だ|He is good at playing the guitar.|彼はギターを弾くのが得意だ。|C||1
+be interested in|～に興味がある|I'm interested in foreign cultures.|私は外国の文化に興味がある。|A||5
+be proud of|～を誇りに思う|I'm proud of my hometown.|私はふるさとを誇りに思う。|C||1
+because of|～のために（原因）|The game was stopped because of the rain.|雨のために試合が中止された。|B||2
+both A and B|AもBも両方|Both Ken and Yumi joined the event.|健も由美もその行事に参加した。|B||2
+Can you tell me more?|もっと詳しく教えてくれますか。|That's interesting. Can you tell me more?|おもしろいね。もっと詳しく教えてくれる？|B||2
+come back|戻ってくる|I'll come back soon.|すぐに戻ってくるね。|C||1
+each other|お互い|We helped each other.|私たちはお互いに助け合った。|B||2
+either A or B|AかBのどちらか|You can choose either tea or coffee.|紅茶かコーヒーのどちらかを選べます。|C||0
+Excuse me.|すみません。|Excuse me. Where is the station?|すみません。駅はどこですか。|B||2
+for a long time|長い間|I have wanted this book for a long time.|この本が長い間ほしかった。|B||3
+for example|例えば|We can reduce waste. For example, we can bring our own bags.|ごみを減らせる。例えば、自分の袋を持っていけばいい。|A||5
+get to|～に着く|How can I get to the museum?|博物館へはどうやって行けばいいですか。|C||1
+have to|～しなければならない|We have to finish this by Friday.|金曜日までにこれを終えなければならない。|A||5
+How about ~?|～はどうですか|How about going to the library?|図書館に行くのはどう？|B||3
+how long|どのくらい長く|How long does it take?|どのくらい時間がかかりますか。|A||4
+how many|いくつ、何人|How many people came to the event?|その行事には何人来ましたか。|A||4
+how much|いくら、どのくらい|How much is this cap?|このぼうしはいくらですか。|B||3
+how to|～のしかた|Can you tell me how to use this machine?|この機械の使い方を教えてくれますか。|B||3
+I agree.|賛成です。|I agree. That's a good idea.|賛成です。それはいい考えですね。|C||1
+I see.|なるほど、わかりました。|I see. Thank you for telling me.|なるほど。教えてくれてありがとう。|A||5
+in front of|～の前に|Let's meet in front of the station.|駅の前で会おう。|C||1
+in the future|将来|I want to work abroad in the future.|将来は海外で働きたい。|C||1
+kind of|（a kind of で）一種の|This is a kind of Japanese sweet.|これは和菓子の一種です。|A||4
+learn about|～について学ぶ|We learned about the history of our town.|私たちは町の歴史について学んだ。|A||5
+listen to|～を聞く|Listen to the ALT carefully.|ALTの話を注意して聞きなさい。|A||4
+look for|～を探す|I'm looking for my cap.|ぼうしを探しています。|A||4
+look like|～のように見える|What does it look like?|それはどのように見えますか（どんな見た目ですか）。|B||2
+many kinds of|多くの種類の|You can see many kinds of birds here.|ここでは多くの種類の鳥が見られる。|A||4
+more than|～より多く|More than half of the students use smartphones.|半分より多くの生徒がスマートフォンを使っている。|A||4
+next to|～の隣に|The library is next to the gym.|図書館は体育館の隣にある。|B||2
+not only A but also B|AだけでなくBも|This app is not only useful but also fun.|このアプリは役に立つだけでなく楽しい。|B||2
+of course|もちろん|Of course, you can use my pen.|もちろん、私のペンを使っていいよ。|A||4
+on the Internet|インターネットで|I found the information on the Internet.|その情報はインターネットで見つけた。|A||6
+on the other hand|一方で|On the other hand, smartphones can be dangerous.|一方で、スマートフォンは危険にもなりうる。|B||3
+one day|ある日|One day, he found an old map.|ある日、彼は古い地図を見つけた。|B||2
+pick up|拾い上げる|Let's pick up the trash in the park.|公園のごみを拾おう。|C||1
+some of|～のいくつか、一部|Some of my friends live in Kofu.|私の友達の何人かは甲府に住んでいる。|A||5
+Sounds good.|いいね。|Sounds good. Let's do that.|いいね。そうしよう。|B||2
+such as|～のような|I like sports such as soccer and tennis.|サッカーやテニスのようなスポーツが好きだ。|B||2
+take a picture|写真を撮る|Can I take a picture here?|ここで写真を撮ってもいいですか。|C||1
+take care of|～の世話をする|I take care of my dog.|私は犬の世話をしている。|B||2
+talk about|～について話す|Let's talk about our summer plans.|夏の計画について話そう。|A||5
+thanks to|～のおかげで|Thanks to you, I enjoyed the trip.|あなたのおかげで旅行を楽しめた。|C||1
+think about|～について考える|We should think about the environment.|私たちは環境について考えるべきだ。|A||6
+think of|～のことを考える、思いつく|What do you think of my idea?|私の考えをどう思いますか。|B||2
+throw away|捨てる|Don't throw away plastic bottles here.|ここにペットボトルを捨てないで。|B||3
+try to|～しようとする|I tried to talk with the ALT in English.|ALTと英語で話そうとした。|A||6
+used to|以前は～だった、よく～したものだ|There used to be a big tree here.|以前ここに大きな木があった。|B||3
+what to|何を～すべきか|I don't know what to say.|何と言えばいいかわからない。|B||3
+Why do you think so?|どうしてそう思うのですか。|You like summer the best? Why do you think so?|夏がいちばん好きなの？どうしてそう思うの？|C||1
+Why don't you ~?|～してはどうですか|Why don't you join the volunteer activity?|ボランティア活動に参加してはどう？|B||2
+Would you like ~?|～はいかがですか|Would you like some tea?|お茶はいかがですか。|B||2
 `;
 
 const POSL = {動:'動詞',名:'名詞',形:'形容詞',副:'副詞',前:'前置詞・接続詞',熟:'熟語・会話'};
 const POS_ORDER = ['動','名','形','副','前','熟'];
-const LV = {A:'基本',B:'標準',C:'発展'};
+const LV = {A:'最頻出',B:'頻出',C:'重要'};
 const WORDS = [];
 (function parse(){
   let cur = '';
   RAW.split('\n').forEach(l => {
     l = l.trim(); if (!l) return;
     if (l[0] === '#') { cur = l.slice(1); return; }
-    const [w, ja, ex, exja, lv, forms] = l.split('|');
-    WORDS.push({ id: cur + ':' + w, w, ja, ex, exja, lv, forms: forms || '', pos: cur });
+    const [w, ja, ex, exja, lv, forms, y] = l.split('|');
+    WORDS.push({ id: cur + ':' + w, w, ja, ex, exja, lv, forms: forms || '', pos: cur, y: +y || 0 });
   });
 })();
 const BYID = Object.fromEntries(WORDS.map(x => [x.id, x]));
+const yLabel = x => x.y ? '出題' + x.y + '年分' : '過去問になし';
 
 /* ---------- 状態と保存 ---------- */
 const LS_KEY = 'yamanashi-nyushi-eitango-v1';
@@ -721,7 +724,7 @@ function renderHome() {
   const chip = (grp, val, label, on) => `<button class="chip" data-grp="${grp}" data-val="${val}" aria-pressed="${on}">${label}</button>`;
   $('#home').innerHTML = `
     <header>
-      <div class="eyebrow">山梨県公立高校入試 対策</div>
+      <div class="eyebrow">山梨県公立高校入試 過去問6年分から厳選</div>
       <h1>入試英単語</h1>
     </header>
     ${installHTML()}
@@ -751,7 +754,7 @@ function renderHome() {
       <div class="field"><span class="lab">発音</span><div class="chips">${chip('auto', 1, '自動で読み上げる', s.auto)}</div></div>
       <button class="weakbtn" id="weak" aria-pressed="${s.weak}">苦手な語だけ出す（${weakN}語）</button>
       <div class="scopecount">出題範囲 <b class="num">${pool.length}</b> 語</div>
-      <p class="note">レベルの目安：基本＝中1〜2の必須語、標準＝入試頻出、発展＝長文・英作文で差がつく語。</p>
+      <p class="note">山梨県公立高校入試の過去問6年分（2021〜2026年度）で、何年分に出たかで分けています。最頻出＝4〜6年分、頻出＝2〜3年分、重要＝1年分以下（出題は少ないが覚えておきたい語）。</p>
     </section>
     <section>
       <h2>品詞ごとの進み具合</h2>
@@ -817,7 +820,7 @@ function renderRows() {
   const dot = id => isLearned(id) ? 'learn' : isWeak(id) ? 'weak' : isSeen(id) ? 'seen' : '';
   $('#wl').innerHTML = rows.length ? rows.map(x => `
     <div class="wrow">
-      <button data-id="${esc(x.id)}" aria-expanded="${openId === x.id}"><span class="dot ${dot(x.id)}"></span><span style="min-width:0"><span class="en">${esc(x.w)}</span><span class="ja">${esc(x.ja)}</span></span><span class="tag ${x.lv}">${POSL[x.pos].slice(0, 3)}・${LV[x.lv]}</span></button>
+      <button data-id="${esc(x.id)}" aria-expanded="${openId === x.id}"><span class="dot ${dot(x.id)}"></span><span style="min-width:0"><span class="en">${esc(x.w)}</span><span class="ja">${esc(x.ja)}</span></span><span class="tag ${x.lv}">${yLabel(x)}</span></button>
       ${openId === x.id ? `<div class="wdetail">${x.forms ? `<div class="forms">${esc(x.w)} – ${x.forms.split('-').map(esc).join(' – ')}</div>` : ''}<div class="ex">${hl(x)}</div><div class="exja">${esc(x.exja)}</div><button class="spk" data-say="${esc(x.id)}">${SPK}発音を聞く</button></div>` : ''}
     </div>`).join('') : '<div class="empty">該当する単語はありません</div>';
 }
@@ -834,7 +837,7 @@ function pickItems(mode) {
   const pool = scopePool(mode);
   const scored = pool.map(x => {
     const e = st(x.id); let sc = Math.random();
-    if (!e) sc += 2; else if (isWeak(x.id)) sc += isDue(x.id) ? 3.2 : 1.2; else if (isDue(x.id)) sc += 1.5; else sc *= 0.5;
+    if (!e) sc += 2 + x.y * 0.2; else if (isWeak(x.id)) sc += isDue(x.id) ? 3.2 : 1.2; else if (isDue(x.id)) sc += 1.5; else sc *= 0.5;
     return [sc, x];
   }).sort((a, b) => b[0] - a[0]);
   return shuffle(scored.slice(0, S.settings.size).map(a => a[1]));
@@ -895,7 +898,7 @@ function renderStudy() {
   }
   const it = Q.items[Q.i], n = Q.items.length, ej = S.settings.dir === 'ej';
   const head = `<div class="shead"><button class="x" data-act="close" aria-label="学習をやめる">×</button><div class="prog"><i style="width:${Q.i / n * 100}%"></i></div><span class="scount num">${Q.i + 1} / ${n}</span></div>`;
-  const posTag = `<span class="tag poslab ${it.lv}">${POSL[it.pos]}・${LV[it.lv]}</span>`;
+  const posTag = `<span class="tag poslab ${it.lv}">${POSL[it.pos]}・${yLabel(it)}</span>`;
   let body = '', foot = '';
   if (Q.mode === 'card') {
     const front = ej ? `<div class="headword">${esc(it.w)}</div>` : `<div class="headja">${esc(it.ja)}</div>`;

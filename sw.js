@@ -1,7 +1,7 @@
 /* sw.js  オフラインでも学習できるようにアプリ本体をキャッシュする
    - index.html はネット優先（更新をすぐ反映）、圏外ではキャッシュを使う
    - アイコン・フォントはキャッシュ優先 */
-var CACHE = 'nyushi-eitango-v1';
+var CACHE = 'nyushi-eitango-v2';
 var SHELL = [
   './',
   './index.html',
